@@ -543,7 +543,7 @@ if __name__ == '__main__':
         login_url = BaseConnector._get_phantom_base_url() + '/login'
         try:
             print("Accessing the Login page")
-            r = requests.get(login_url, verify=False)
+            r = requests.get(login_url, verify=False) # nosemgrep: python.requests.best-practice.use-timeout.use-timeout
             csrftoken = r.cookies['csrftoken']
 
             data = dict()
@@ -556,15 +556,15 @@ if __name__ == '__main__':
             headers['Referer'] = login_url
 
             print("Logging into Platform to get the session id")
-            r2 = requests.post(login_url, verify=False, data=data, headers=headers)
+            r2 = requests.post(login_url, verify=False, data=data, headers=headers) # nosemgrep: python.requests.best-practice.use-timeout.use-timeout
             session_id = r2.cookies['sessionid']
         except Exception as e:
             print("Unable to get session id from the platform. Error: " + str(e))
-            sys.exit()
+            sys.exit(1)
 
     if (len(sys.argv) < 2):
         print("No test json specified as input")
-        sys.exit()
+        sys.exit(0)
 
     with open(args.input_test_json) as f:
         in_json = f.read()
@@ -581,4 +581,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
 
-    sys.exit()
+    sys.exit(0)
