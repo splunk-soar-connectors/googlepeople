@@ -15,21 +15,21 @@
 #
 #
 # Phantom App imports
-import phantom.app as phantom
-from phantom.base_connector import BaseConnector
-from phantom.action_result import ActionResult
-import phantom.utils as ph_utils
-
-from googlepeople_consts import *
-
-import requests
-import os
 import json
-from google.oauth2 import service_account
-from bs4 import UnicodeDammit
+import os
 from html import unescape
+
+import phantom.app as phantom
+import phantom.utils as ph_utils
+import requests
+from bs4 import UnicodeDammit
+from google.oauth2 import service_account
 from googleapiclient import discovery
 from googleapiclient.errors import HttpError
+from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
+
+from googlepeople_consts import *
 
 init_path = '{}/dependencies/google/__init__.py'.format(
     os.path.dirname(os.path.abspath(__file__))
@@ -109,7 +109,8 @@ class GooglePeopleConnector(BaseConnector):
             credentials = service_account.Credentials.from_service_account_info(self._key_dict, scopes=scopes)
         except Exception as e:
             err_msg = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to get the credentials from the key json. {}".format(err_msg)), None)
+            return RetVal(action_result.set_status(
+                phantom.APP_ERROR, "Unable to get the credentials from the key json. {}".format(err_msg)), None)
 
         if self._login_email:
             try:
@@ -496,7 +497,8 @@ class GooglePeopleConnector(BaseConnector):
         except Exception as e:
             err_msg = self._get_error_message_from_exception(e)
             self.debug_print("Exception message: {}".format(err_msg))
-            return self.set_status(phantom.APP_ERROR, "Please provide a valid value for the 'Contents of service account JSON file' asset configuration parameter")
+            return self.set_status(
+                phantom.APP_ERROR, "Please provide a valid value for the 'Contents of service account JSON file' asset configuration parameter")
 
         self._login_email = config['login_email']
 
@@ -512,9 +514,10 @@ class GooglePeopleConnector(BaseConnector):
 
 if __name__ == '__main__':
 
-    import sys
-    import pudb
     import argparse
+    import sys
+
+    import pudb
 
     pudb.set_trace()
 
@@ -557,11 +560,11 @@ if __name__ == '__main__':
             session_id = r2.cookies['sessionid']
         except Exception as e:
             print("Unable to get session id from the platform. Error: " + str(e))
-            exit(1)
+            sys.exit()
 
     if (len(sys.argv) < 2):
         print("No test json specified as input")
-        exit(0)
+        sys.exit()
 
     with open(args.input_test_json) as f:
         in_json = f.read()
@@ -578,4 +581,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
 
-    exit(0)
+    sys.exit()
