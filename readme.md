@@ -92,3 +92,11 @@ To enable scopes please complete the following steps:
     -   'https://www.googleapis.com/auth/directory.readonly'
     -   'https://www.googleapis.com/auth/userinfo.profile'
 -   Click **Authorize** .
+
+## Port Information
+The app uses HTTP/ HTTPS protocol for communicating with the Google People server. Below are the default ports used by Splunk SOAR.
+
+SERVICE NAME | TRANSPORT PROTOCOL | PORT
+------------ | ------------------ | ----
+**http** | tcp | 80
+**https** | tcp | 443
