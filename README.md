@@ -2,7 +2,7 @@
 # Google People
 
 Publisher: Splunk  
-Connector Version: 1\.1\.3  
+Connector Version: 1\.1\.4  
 Product Vendor: Google  
 Product Name: Google People  
 Product Version Supported (regex): "\.\*"  
@@ -10,7 +10,7 @@ Minimum Product Version: 5\.0\.0
 
 This app integrates with Google People to support various generic and investigative actions
 
-[comment]: # " File: readme.md"
+[comment]: # " File: README.md"
 [comment]: # "  Copyright (c) 2021-2022 Splunk Inc."
 [comment]: # ""
 [comment]: # "  Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)"
