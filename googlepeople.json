@@ -10,13 +10,13 @@
     "python_version": "3",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) 2021-2022 Splunk Inc.",
+    "license": "Copyright (c) 2021-2023 Splunk Inc.",
     "app_version": "1.1.4",
     "fips_compliant": true,
     "utctime_updated": "2022-01-07T22:38:16.000000Z",
     "package_name": "phantom_googlepeople",
     "main_module": "googlepeople_connector.py",
-    "min_phantom_version": "5.0.0",
+    "min_phantom_version": "5.5.0",
     "app_wizard_version": "1.0.0",
     "pip_dependencies": {
         "wheel": [
@@ -98,7 +98,7 @@
             },
             {
                 "module": "httplib2",
-                "input_file": "wheels/py3/httplib2-0.19.0-py3-none-any.whl"
+                "input_file": "wheels/py3/httplib2-0.22.0-py3-none-any.whl"
             },
             {
                 "module": "idna",
@@ -122,7 +122,7 @@
             },
             {
                 "module": "pyparsing",
-                "input_file": "wheels/shared/pyparsing-2.4.7-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/pyparsing-3.0.9-py3-none-any.whl"
             },
             {
                 "module": "requests",
@@ -134,7 +134,7 @@
             },
             {
                 "module": "rsa",
-                "input_file": "wheels/shared/rsa-4.4.1-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/rsa-4.9-py3-none-any.whl"
             },
             {
                 "module": "setuptools",
@@ -1621,7 +1621,7 @@
             },
             {
                 "module": "httplib2",
-                "input_file": "wheels/py3/httplib2-0.19.0-py3-none-any.whl"
+                "input_file": "wheels/py3/httplib2-0.22.0-py3-none-any.whl"
             },
             {
                 "module": "idna",
@@ -1645,7 +1645,7 @@
             },
             {
                 "module": "pyparsing",
-                "input_file": "wheels/shared/pyparsing-2.4.7-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/pyparsing-3.0.9-py3-none-any.whl"
             },
             {
                 "module": "requests",
@@ -1657,7 +1657,7 @@
             },
             {
                 "module": "rsa",
-                "input_file": "wheels/shared/rsa-4.4.1-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/rsa-4.9-py3-none-any.whl"
             },
             {
                 "module": "setuptools",
