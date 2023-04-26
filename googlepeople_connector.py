@@ -68,23 +68,23 @@ class GooglePeopleConnector(BaseConnector):
                     error_code = e.args[0]
                     error_message = e.args[1]
                 elif len(e.args) == 1:
-                    error_code = ERR_CODE_MESSAGE
+                    error_code = ERROR_CODE_MESSAGE
                     error_message = e.args[0]
             else:
-                error_code = ERR_CODE_MESSAGE
-                error_message = ERR_MESSAGE_UNAVAILABLE
+                error_code = ERROR_CODE_MESSAGE
+                error_message = ERROR_MESSAGE_UNAVAILABLE
         except:
-            error_code = ERR_CODE_MESSAGE
-            error_message = ERR_MESSAGE_UNAVAILABLE
+            error_code = ERROR_CODE_MESSAGE
+            error_message = ERROR_MESSAGE_UNAVAILABLE
 
         try:
-            if error_code in ERR_CODE_MESSAGE:
+            if error_code in ERROR_CODE_MESSAGE:
                 error_text = "Error Message: {0}".format(error_message)
             else:
                 error_text = "Error Code: {0}. Error Message: {1}".format(error_code, error_message)
         except:
-            self.debug_print(PARSE_ERR_MESSAGE)
-            error_text = PARSE_ERR_MESSAGE
+            self.debug_print(PARSE_ERROR_MESSAGE)
+            error_text = PARSE_ERROR_MESSAGE
 
         return error_text
 
@@ -92,14 +92,14 @@ class GooglePeopleConnector(BaseConnector):
         if parameter is not None:
             try:
                 if not float(parameter).is_integer():
-                    return action_result.set_status(phantom.APP_ERROR, INVALID_INTEGER_ERR_MESSAGE.format(key)), None
+                    return action_result.set_status(phantom.APP_ERROR, INVALID_INTEGER_ERROR_MESSAGE.format(key)), None
 
                 parameter = int(parameter)
             except:
-                return action_result.set_status(phantom.APP_ERROR, INVALID_INTEGER_ERR_MESSAGE.format(key)), None
+                return action_result.set_status(phantom.APP_ERROR, INVALID_INTEGER_ERROR_MESSAGE.format(key)), None
 
             if parameter <= 0:
-                return action_result.set_status(phantom.APP_ERROR, INVALID_NON_ZERO_NON_NEGATIVE_INTEGER_ERR_MESSAGE.format(key)), None
+                return action_result.set_status(phantom.APP_ERROR, INVALID_NON_ZERO_NON_NEGATIVE_INTEGER_ERROR_MESSAGE.format(key)), None
 
         return phantom.APP_SUCCESS, parameter
 
@@ -218,7 +218,7 @@ class GooglePeopleConnector(BaseConnector):
         masks = list(filter(None, masks))
 
         if not masks:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERR_MESSAGE.format('read mask'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('read mask'))
 
         read_mask = ",".join(masks)
 
@@ -280,7 +280,7 @@ class GooglePeopleConnector(BaseConnector):
         masks = list(filter(None, masks))
 
         if not masks:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERR_MESSAGE.format('copy mask'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('copy mask'))
 
         copy_mask = ",".join(masks)
 
@@ -324,7 +324,7 @@ class GooglePeopleConnector(BaseConnector):
         masks = list(filter(None, masks))
 
         if not masks:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERR_MESSAGE.format('read mask'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('read mask'))
 
         read_mask = ",".join(masks)
 
@@ -384,7 +384,7 @@ class GooglePeopleConnector(BaseConnector):
         fields = list(filter(None, fields))
 
         if not fields:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERR_MESSAGE.format('person fields'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('person fields'))
 
         person_fields = ",".join(fields)
         kwargs.update({'personFields': person_fields})
@@ -427,7 +427,7 @@ class GooglePeopleConnector(BaseConnector):
         fields = list(filter(None, fields))
 
         if not fields:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERR_MESSAGE.format('person fields'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('person fields'))
 
         person_fields = ",".join(fields)
 

@@ -98,7 +98,7 @@
             },
             {
                 "module": "httplib2",
-                "input_file": "wheels/py3/httplib2-0.22.0-py3-none-any.whl"
+                "input_file": "wheels/py3/httplib2-0.19.0-py3-none-any.whl"
             },
             {
                 "module": "idna",
@@ -122,7 +122,7 @@
             },
             {
                 "module": "pyparsing",
-                "input_file": "wheels/py3/pyparsing-3.0.9-py3-none-any.whl"
+                "input_file": "wheels/shared/pyparsing-2.4.7-py2.py3-none-any.whl"
             },
             {
                 "module": "requests",
@@ -1621,7 +1621,7 @@
             },
             {
                 "module": "httplib2",
-                "input_file": "wheels/py3/httplib2-0.22.0-py3-none-any.whl"
+                "input_file": "wheels/py3/httplib2-0.19.0-py3-none-any.whl"
             },
             {
                 "module": "idna",
@@ -1645,7 +1645,7 @@
             },
             {
                 "module": "pyparsing",
-                "input_file": "wheels/py3/pyparsing-3.0.9-py3-none-any.whl"
+                "input_file": "wheels/shared/pyparsing-2.4.7-py2.py3-none-any.whl"
             },
             {
                 "module": "requests",
