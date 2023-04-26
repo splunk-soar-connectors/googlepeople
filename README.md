@@ -6,7 +6,7 @@ Connector Version: 1.1.4
 Product Vendor: Google  
 Product Name: Google People  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 5.0.0  
+Minimum Product Version: 5.5.0  
 
 This app integrates with Google People to support various generic and investigative actions
 
