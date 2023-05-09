@@ -66,25 +66,25 @@ class GooglePeopleConnector(BaseConnector):
             if e.args:
                 if len(e.args) > 1:
                     error_code = e.args[0]
-                    error_msg = e.args[1]
+                    error_message = e.args[1]
                 elif len(e.args) == 1:
-                    error_code = ERR_CODE_MSG
-                    error_msg = e.args[0]
+                    error_code = ERROR_CODE_MESSAGE
+                    error_message = e.args[0]
             else:
-                error_code = ERR_CODE_MSG
-                error_msg = ERR_MSG_UNAVAILABLE
+                error_code = ERROR_CODE_MESSAGE
+                error_message = ERROR_MESSAGE_UNAVAILABLE
         except:
-            error_code = ERR_CODE_MSG
-            error_msg = ERR_MSG_UNAVAILABLE
+            error_code = ERROR_CODE_MESSAGE
+            error_message = ERROR_MESSAGE_UNAVAILABLE
 
         try:
-            if error_code in ERR_CODE_MSG:
-                error_text = "Error Message: {0}".format(error_msg)
+            if error_code in ERROR_CODE_MESSAGE:
+                error_text = "Error Message: {0}".format(error_message)
             else:
-                error_text = "Error Code: {0}. Error Message: {1}".format(error_code, error_msg)
+                error_text = "Error Code: {0}. Error Message: {1}".format(error_code, error_message)
         except:
-            self.debug_print(PARSE_ERR_MSG)
-            error_text = PARSE_ERR_MSG
+            self.debug_print(PARSE_ERROR_MESSAGE)
+            error_text = PARSE_ERROR_MESSAGE
 
         return error_text
 
@@ -92,14 +92,14 @@ class GooglePeopleConnector(BaseConnector):
         if parameter is not None:
             try:
                 if not float(parameter).is_integer():
-                    return action_result.set_status(phantom.APP_ERROR, INVALID_INTEGER_ERR_MSG.format(key)), None
+                    return action_result.set_status(phantom.APP_ERROR, INVALID_INTEGER_ERROR_MESSAGE.format(key)), None
 
                 parameter = int(parameter)
             except:
-                return action_result.set_status(phantom.APP_ERROR, INVALID_INTEGER_ERR_MSG.format(key)), None
+                return action_result.set_status(phantom.APP_ERROR, INVALID_INTEGER_ERROR_MESSAGE.format(key)), None
 
             if parameter <= 0:
-                return action_result.set_status(phantom.APP_ERROR, INVALID_NON_ZERO_NON_NEGATIVE_INTEGER_ERR_MSG.format(key)), None
+                return action_result.set_status(phantom.APP_ERROR, INVALID_NON_ZERO_NON_NEGATIVE_INTEGER_ERROR_MESSAGE.format(key)), None
 
         return phantom.APP_SUCCESS, parameter
 
@@ -108,22 +108,23 @@ class GooglePeopleConnector(BaseConnector):
         try:
             credentials = service_account.Credentials.from_service_account_info(self._key_dict, scopes=scopes)
         except Exception as e:
-            err_msg = self._get_error_message_from_exception(e)
+            err_message = self._get_error_message_from_exception(e)
             return RetVal(action_result.set_status(
-                phantom.APP_ERROR, "Unable to get the credentials from the key json. {}".format(err_msg)), None)
+                phantom.APP_ERROR, "Unable to get the credentials from the key json. {}".format(err_message)), None)
 
         if self._login_email:
             try:
                 credentials = credentials.with_subject(self._login_email)
             except Exception as e:
-                err_msg = self._get_error_message_from_exception(e)
-                return RetVal(action_result.set_status(phantom.APP_ERROR, "Failed to create delegated credentials. {}".format(err_msg)), None)
+                err_message = self._get_error_message_from_exception(e)
+                return RetVal(
+                    action_result.set_status(phantom.APP_ERROR, "Failed to create delegated credentials. {}".format(err_message)), None)
 
         try:
             client = discovery.build('people', 'v1', credentials=credentials)
         except Exception as e:
-            err_msg = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to create client. {}".format(err_msg)), None)
+            err_message = self._get_error_message_from_exception(e)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to create client. {}".format(err_message)), None)
 
         return RetVal(phantom.APP_SUCCESS, client)
 
@@ -192,8 +193,9 @@ class GooglePeopleConnector(BaseConnector):
             client.people().connections().list(resourceName='people/me', personFields='names,emailAddresses').execute()
         except Exception as e:
             self.save_progress("Test Connectivity Failed")
-            err_msg = unescape(UnicodeDammit(self._get_error_message_from_exception(e)).unicode_markup.encode('utf-8').decode('unicode_escape'))
-            return action_result.set_status(phantom.APP_ERROR, "Error while listing connections. {}".format(err_msg))
+            err_message = unescape(
+                UnicodeDammit(self._get_error_message_from_exception(e)).unicode_markup.encode('utf-8').decode('unicode_escape'))
+            return action_result.set_status(phantom.APP_ERROR, "Error while listing connections. {}".format(err_message))
 
         # Return success
         self.save_progress("Test Connectivity Passed")
@@ -206,7 +208,7 @@ class GooglePeopleConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MSG)
+            self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MESSAGE)
             return action_result.get_status()
 
         read_mask = param.get('read_mask', 'names,emailAddresses')
@@ -216,7 +218,7 @@ class GooglePeopleConnector(BaseConnector):
         masks = list(filter(None, masks))
 
         if not masks:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERR_MSG.format('read mask'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('read mask'))
 
         read_mask = ",".join(masks)
 
@@ -230,14 +232,14 @@ class GooglePeopleConnector(BaseConnector):
             otherContacts = self._paginator(client, read_mask, limit)
         except HttpError as e:
             if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_LIST_OTHER_CONTACTS_FAILED_MSG, e._get_reason()))
-            err_msg = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_msg))
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_OTHER_CONTACTS_FAILED_MSG)
+                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_LIST_OTHER_CONTACTS_FAILED_MESSAGE, e._get_reason()))
+            err_message = self._get_error_message_from_exception(e)
+            self.debug_print("Exception message: {}".format(err_message))
+            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_OTHER_CONTACTS_FAILED_MESSAGE)
         except Exception as e:
-            err_msg = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_msg))
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_OTHER_CONTACTS_FAILED_MSG)
+            err_message = self._get_error_message_from_exception(e)
+            self.debug_print("Exception message: {}".format(err_message))
+            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_OTHER_CONTACTS_FAILED_MESSAGE)
 
         num_otherContacts = len(otherContacts)
 
@@ -262,7 +264,7 @@ class GooglePeopleConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MSG)
+            self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MESSAGE)
             return action_result.get_status()
 
         resource_name = param['resource_name']
@@ -278,7 +280,7 @@ class GooglePeopleConnector(BaseConnector):
         masks = list(filter(None, masks))
 
         if not masks:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERR_MSG.format('copy mask'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('copy mask'))
 
         copy_mask = ",".join(masks)
 
@@ -288,14 +290,14 @@ class GooglePeopleConnector(BaseConnector):
             response = client.otherContacts().copyOtherContactToMyContactsGroup(resourceName=resource_name, body=data).execute()
         except HttpError as e:
             if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_COPY_CONTACT_FAILED_MSG, e._get_reason()))
-            err_msg = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_msg))
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_COPY_CONTACT_FAILED_MSG)
+                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_COPY_CONTACT_FAILED_MESSAGE, e._get_reason()))
+            err_message = self._get_error_message_from_exception(e)
+            self.debug_print("Exception message: {}".format(err_message))
+            return action_result.set_status(phantom.APP_ERROR, GOOGLE_COPY_CONTACT_FAILED_MESSAGE)
         except Exception as e:
-            err_msg = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_msg))
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_COPY_CONTACT_FAILED_MSG)
+            err_message = self._get_error_message_from_exception(e)
+            self.debug_print("Exception message: {}".format(err_message))
+            return action_result.set_status(phantom.APP_ERROR, GOOGLE_COPY_CONTACT_FAILED_MESSAGE)
 
         action_result.add_data(response)
 
@@ -312,7 +314,7 @@ class GooglePeopleConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MSG)
+            self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MESSAGE)
             return action_result.get_status()
 
         read_mask = param.get('read_mask', 'names,emailAddresses')
@@ -322,7 +324,7 @@ class GooglePeopleConnector(BaseConnector):
         masks = list(filter(None, masks))
 
         if not masks:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERR_MSG.format('read mask'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('read mask'))
 
         read_mask = ",".join(masks)
 
@@ -336,14 +338,14 @@ class GooglePeopleConnector(BaseConnector):
             directoryPeople = self._paginator(client, read_mask, limit)
         except HttpError as e:
             if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_LIST_DIRECTORY_FAILED_MSG, e._get_reason()))
-            err_msg = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_msg))
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_DIRECTORY_FAILED_MSG)
+                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE, e._get_reason()))
+            err_message = self._get_error_message_from_exception(e)
+            self.debug_print("Exception message: {}".format(err_message))
+            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE)
         except Exception as e:
-            err_msg = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_msg))
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_DIRECTORY_FAILED_MSG)
+            err_message = self._get_error_message_from_exception(e)
+            self.debug_print("Exception message: {}".format(err_message))
+            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE)
 
         num_directoryPeople = len(directoryPeople)
         action_result.update_summary({'total_people_returned': num_directoryPeople})
@@ -370,7 +372,7 @@ class GooglePeopleConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MSG)
+            self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MESSAGE)
             return action_result.get_status()
 
         kwargs = {'sources': ['READ_SOURCE_TYPE_CONTACT']}
@@ -382,7 +384,7 @@ class GooglePeopleConnector(BaseConnector):
         fields = list(filter(None, fields))
 
         if not fields:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERR_MSG.format('person fields'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('person fields'))
 
         person_fields = ",".join(fields)
         kwargs.update({'personFields': person_fields})
@@ -391,14 +393,14 @@ class GooglePeopleConnector(BaseConnector):
             response = client.people().get(resourceName=resource_name, **kwargs).execute()
         except HttpError as e:
             if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_GET_USER_PROFILE_FAILED_MSG, e._get_reason()))
-            err_msg = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_msg))
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_GET_USER_PROFILE_FAILED_MSG)
+                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_GET_USER_PROFILE_FAILED_MESSAGE, e._get_reason()))
+            err_message = self._get_error_message_from_exception(e)
+            self.debug_print("Exception message: {}".format(err_message))
+            return action_result.set_status(phantom.APP_ERROR, GOOGLE_GET_USER_PROFILE_FAILED_MESSAGE)
         except Exception as e:
-            err_msg = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_msg))
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_GET_USER_PROFILE_FAILED_MSG)
+            err_message = self._get_error_message_from_exception(e)
+            self.debug_print("Exception message: {}".format(err_message))
+            return action_result.set_status(phantom.APP_ERROR, GOOGLE_GET_USER_PROFILE_FAILED_MESSAGE)
 
         action_result.add_data(response)
 
@@ -415,7 +417,7 @@ class GooglePeopleConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MSG)
+            self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MESSAGE)
             return action_result.get_status()
 
         person_fields = param.get('person_fields', 'names,emailAddresses')
@@ -425,7 +427,7 @@ class GooglePeopleConnector(BaseConnector):
         fields = list(filter(None, fields))
 
         if not fields:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERR_MSG.format('person fields'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('person fields'))
 
         person_fields = ",".join(fields)
 
@@ -439,14 +441,14 @@ class GooglePeopleConnector(BaseConnector):
             people = self._paginator(client, person_fields, limit)
         except HttpError as e:
             if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_LIST_PEOPLE_FAILED_MSG, e._get_reason()))
-            err_msg = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_msg))
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_PEOPLE_FAILED_MSG)
+                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_LIST_PEOPLE_FAILED_MESSAGE, e._get_reason()))
+            err_message = self._get_error_message_from_exception(e)
+            self.debug_print("Exception message: {}".format(err_message))
+            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_PEOPLE_FAILED_MESSAGE)
         except Exception as e:
-            err_msg = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_msg))
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_PEOPLE_FAILED_MSG)
+            err_message = self._get_error_message_from_exception(e)
+            self.debug_print("Exception message: {}".format(err_message))
+            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_PEOPLE_FAILED_MESSAGE)
 
         for person in people:
             action_result.add_data(person)
@@ -495,8 +497,8 @@ class GooglePeopleConnector(BaseConnector):
         try:
             self._key_dict = json.loads(key_json)
         except Exception as e:
-            err_msg = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_msg))
+            err_message = self._get_error_message_from_exception(e)
+            self.debug_print("Exception message: {}".format(err_message))
             return self.set_status(
                 phantom.APP_ERROR, "Please provide a valid value for the 'Contents of service account JSON file' asset configuration parameter")
 
