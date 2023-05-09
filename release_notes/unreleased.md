@@ -1,2 +1,1 @@
 **Unreleased**
-* Update dependency versions to capture new security patches [PAPP-30340]
