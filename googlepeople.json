@@ -1456,10 +1456,6 @@
                 "input_file": "wheels/shared/cachetools-2.0.1-py2.py3-none-any.whl"
             },
             {
-                "module": "charset_normalizer",
-                "input_file": "wheels/py39/charset_normalizer-3.3.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
-            },
-            {
                 "module": "google_api_python_client",
                 "input_file": "wheels/shared/google_api_python_client-1.6.4-py2.py3-none-any.whl"
             },
