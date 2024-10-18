@@ -10,7 +10,7 @@
     "python_version": "3",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) 2021-2023 Splunk Inc.",
+    "license": "Copyright (c) 2021-2024 Splunk Inc.",
     "app_version": "1.1.6",
     "fips_compliant": true,
     "utctime_updated": "2023-05-09T18:27:58.000000Z",
