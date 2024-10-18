@@ -16,7 +16,7 @@
     "utctime_updated": "2023-05-09T18:27:58.000000Z",
     "package_name": "phantom_googlepeople",
     "main_module": "googlepeople_connector.py",
-    "min_phantom_version": "5.5.0",
+    "min_phantom_version": "6.2.2",
     "app_wizard_version": "1.0.0",
     "configuration": {
         "key_json": {
