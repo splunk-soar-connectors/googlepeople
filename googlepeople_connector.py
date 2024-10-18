@@ -31,11 +31,9 @@ from phantom.base_connector import BaseConnector
 
 from googlepeople_consts import *
 
-init_path = '{}/dependencies/google/__init__.py'.format(
-    os.path.dirname(os.path.abspath(__file__))
-)
+init_path = "{}/dependencies/google/__init__.py".format(os.path.dirname(os.path.abspath(__file__)))
 try:
-    open(init_path, 'a+').close()
+    open(init_path, "a+").close()
 except:
     pass
 
@@ -57,7 +55,7 @@ class GooglePeopleConnector(BaseConnector):
         self._state = None
 
     def _get_error_message_from_exception(self, e):
-        """ This method is used to get appropriate error messages from the exception.
+        """This method is used to get appropriate error messages from the exception.
         :param e: Exception object
         :return: error message
         """
@@ -109,8 +107,9 @@ class GooglePeopleConnector(BaseConnector):
             credentials = service_account.Credentials.from_service_account_info(self._key_dict, scopes=scopes)
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(
-                phantom.APP_ERROR, "Unable to get the credentials from the key json. {}".format(err_message)), None)
+            return RetVal(
+                action_result.set_status(phantom.APP_ERROR, "Unable to get the credentials from the key json. {}".format(err_message)), None
+            )
 
         if self._login_email:
             try:
@@ -118,10 +117,11 @@ class GooglePeopleConnector(BaseConnector):
             except Exception as e:
                 err_message = self._get_error_message_from_exception(e)
                 return RetVal(
-                    action_result.set_status(phantom.APP_ERROR, "Failed to create delegated credentials. {}".format(err_message)), None)
+                    action_result.set_status(phantom.APP_ERROR, "Failed to create delegated credentials. {}".format(err_message)), None
+                )
 
         try:
-            client = discovery.build('people', 'v1', credentials=credentials)
+            client = discovery.build("people", "v1", credentials=credentials)
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to create client. {}".format(err_message)), None)
@@ -129,7 +129,6 @@ class GooglePeopleConnector(BaseConnector):
         return RetVal(phantom.APP_SUCCESS, client)
 
     def _paginator(self, client, fields, limit):
-
         """
         This method repeatedly makes API calls until the requested number of records are fetched from the server.
 
@@ -142,35 +141,35 @@ class GooglePeopleConnector(BaseConnector):
         list_items = list()
         page_token = None
         action_id = self.get_action_identifier()
-        kwargs.update({'pageSize': 1000})
+        kwargs.update({"pageSize": 1000})
 
         while True:
             if page_token:
                 kwargs.update({"pageToken": page_token})
 
             if action_id == "list_other_contacts":
-                kwargs.update({'readMask': fields})
+                kwargs.update({"readMask": fields})
                 response = client.otherContacts().list(**kwargs).execute()
                 if response.get("otherContacts"):
                     list_items.extend(response.get("otherContacts"))
 
             elif action_id == "list_directory":
-                kwargs.update({'sources': ['DIRECTORY_SOURCE_TYPE_DOMAIN_CONTACT', 'DIRECTORY_SOURCE_TYPE_DOMAIN_PROFILE']})
-                kwargs.update({'readMask': fields})
+                kwargs.update({"sources": ["DIRECTORY_SOURCE_TYPE_DOMAIN_CONTACT", "DIRECTORY_SOURCE_TYPE_DOMAIN_PROFILE"]})
+                kwargs.update({"readMask": fields})
                 response = client.people().listDirectoryPeople(**kwargs).execute()
                 if response.get("people"):
                     list_items.extend(response.get("people"))
 
             elif action_id == "list_people":
-                kwargs.update({'sources': ['READ_SOURCE_TYPE_CONTACT']})
-                kwargs.update({'personFields': fields})
-                response = client.people().connections().list(resourceName='people/me', **kwargs).execute()
+                kwargs.update({"sources": ["READ_SOURCE_TYPE_CONTACT"]})
+                kwargs.update({"personFields": fields})
+                response = client.people().connections().list(resourceName="people/me", **kwargs).execute()
                 if response.get("connections"):
                     list_items.extend(response.get("connections"))
 
             if limit and len(list_items) >= limit:
                 return list_items[:limit]
-            page_token = response.get('nextPageToken')
+            page_token = response.get("nextPageToken")
             if not page_token:
                 break
 
@@ -190,11 +189,12 @@ class GooglePeopleConnector(BaseConnector):
 
         self.save_progress("Getting list of connections for {}".format(self._login_email))
         try:
-            client.people().connections().list(resourceName='people/me', personFields='names,emailAddresses').execute()
+            client.people().connections().list(resourceName="people/me", personFields="names,emailAddresses").execute()
         except Exception as e:
             self.save_progress("Test Connectivity Failed")
             err_message = unescape(
-                UnicodeDammit(self._get_error_message_from_exception(e)).unicode_markup.encode('utf-8').decode('unicode_escape'))
+                UnicodeDammit(self._get_error_message_from_exception(e)).unicode_markup.encode("utf-8").decode("unicode_escape")
+            )
             return action_result.set_status(phantom.APP_ERROR, "Error while listing connections. {}".format(err_message))
 
         # Return success
@@ -211,18 +211,18 @@ class GooglePeopleConnector(BaseConnector):
             self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MESSAGE)
             return action_result.get_status()
 
-        read_mask = param.get('read_mask', 'names,emailAddresses')
+        read_mask = param.get("read_mask", "names,emailAddresses")
 
         # Validation for comma-separated value
         masks = [x.strip() for x in read_mask.split(",")]
         masks = list(filter(None, masks))
 
         if not masks:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('read mask'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format("read mask"))
 
         read_mask = ",".join(masks)
 
-        limit = param.get('limit')
+        limit = param.get("limit")
         # Validate 'limit' action parameter
         ret_val, limit = self._validate_integer(action_result, limit, LIMIT_KEY)
         if phantom.is_fail(ret_val):
@@ -246,12 +246,10 @@ class GooglePeopleConnector(BaseConnector):
         for contact in otherContacts:
             action_result.add_data(contact)
 
-        action_result.update_summary({'total_otherContacts_returned': num_otherContacts})
+        action_result.update_summary({"total_otherContacts_returned": num_otherContacts})
 
         return action_result.set_status(
-            phantom.APP_SUCCESS, 'Successfully retrieved {} otherContact{}'.format(
-                num_otherContacts, '' if num_otherContacts == 1 else 's'
-            )
+            phantom.APP_SUCCESS, "Successfully retrieved {} otherContact{}".format(num_otherContacts, "" if num_otherContacts == 1 else "s")
         )
 
     def _handle_copy_contact(self, param):
@@ -267,24 +265,24 @@ class GooglePeopleConnector(BaseConnector):
             self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MESSAGE)
             return action_result.get_status()
 
-        resource_name = param['resource_name']
+        resource_name = param["resource_name"]
         if OTHER_CONTACTS_RESOURCE_NAME_PREFIX not in resource_name:
             return action_result.set_status(phantom.APP_ERROR, "Resource name of contact to be copied must be 'otherContact'")
 
         data = {}
 
-        copy_mask = param.get('copy_mask', 'names,emailAddresses,phoneNumbers')
+        copy_mask = param.get("copy_mask", "names,emailAddresses,phoneNumbers")
 
         # Validation for comma-separated value
         masks = [x.strip() for x in copy_mask.split(",")]
         masks = list(filter(None, masks))
 
         if not masks:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('copy mask'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format("copy mask"))
 
         copy_mask = ",".join(masks)
 
-        data.update({'copyMask': copy_mask})
+        data.update({"copyMask": copy_mask})
 
         try:
             response = client.otherContacts().copyOtherContactToMyContactsGroup(resourceName=resource_name, body=data).execute()
@@ -301,9 +299,9 @@ class GooglePeopleConnector(BaseConnector):
 
         action_result.add_data(response)
 
-        action_result.update_summary({'total_contacts_copied': 1})
+        action_result.update_summary({"total_contacts_copied": 1})
 
-        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully copied 1 contact')
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully copied 1 contact")
 
     def _handle_list_directory(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
@@ -317,18 +315,18 @@ class GooglePeopleConnector(BaseConnector):
             self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MESSAGE)
             return action_result.get_status()
 
-        read_mask = param.get('read_mask', 'names,emailAddresses')
+        read_mask = param.get("read_mask", "names,emailAddresses")
 
         # Validation for comma-separated value
         masks = [x.strip() for x in read_mask.split(",")]
         masks = list(filter(None, masks))
 
         if not masks:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('read mask'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format("read mask"))
 
         read_mask = ",".join(masks)
 
-        limit = param.get('limit')
+        limit = param.get("limit")
         # Validate 'limit' action parameter
         ret_val, limit = self._validate_integer(action_result, limit, LIMIT_KEY)
         if phantom.is_fail(ret_val):
@@ -348,15 +346,13 @@ class GooglePeopleConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE)
 
         num_directoryPeople = len(directoryPeople)
-        action_result.update_summary({'total_people_returned': num_directoryPeople})
+        action_result.update_summary({"total_people_returned": num_directoryPeople})
 
         for person in directoryPeople:
             action_result.add_data(person)
 
         return action_result.set_status(
-            phantom.APP_SUCCESS, 'Successfully retrieved {} {}'.format(
-                num_directoryPeople, 'person' if num_directoryPeople == 1 else 'people'
-            )
+            phantom.APP_SUCCESS, "Successfully retrieved {} {}".format(num_directoryPeople, "person" if num_directoryPeople == 1 else "people")
         )
 
     def _handle_get_user_profile(self, param):
@@ -365,8 +361,8 @@ class GooglePeopleConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_PROFILE_SCOPE, GOOGLE_CONTACTS_SCOPE]
 
-        resource_name = param['resource_name']
-        if resource_name.startswith('otherContacts/'):
+        resource_name = param["resource_name"]
+        if resource_name.startswith("otherContacts/"):
             return action_result.set_status(phantom.APP_ERROR, "This action cannot be performed on otherContacts")
 
         ret_val, client = self._create_client(action_result, scopes)
@@ -375,19 +371,19 @@ class GooglePeopleConnector(BaseConnector):
             self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MESSAGE)
             return action_result.get_status()
 
-        kwargs = {'sources': ['READ_SOURCE_TYPE_CONTACT']}
+        kwargs = {"sources": ["READ_SOURCE_TYPE_CONTACT"]}
 
-        person_fields = param.get('person_fields', 'names,emailAddresses')
+        person_fields = param.get("person_fields", "names,emailAddresses")
 
         # Validation for comma-separated value
         fields = [x.strip() for x in person_fields.split(",")]
         fields = list(filter(None, fields))
 
         if not fields:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('person fields'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format("person fields"))
 
         person_fields = ",".join(fields)
-        kwargs.update({'personFields': person_fields})
+        kwargs.update({"personFields": person_fields})
 
         try:
             response = client.people().get(resourceName=resource_name, **kwargs).execute()
@@ -404,7 +400,7 @@ class GooglePeopleConnector(BaseConnector):
 
         action_result.add_data(response)
 
-        action_result.update_summary({'resource_id_returned': response.get('resourceName')})
+        action_result.update_summary({"resource_id_returned": response.get("resourceName")})
 
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully retrieved user profile")
 
@@ -420,18 +416,18 @@ class GooglePeopleConnector(BaseConnector):
             self.debug_print(GOOGLE_CREATE_CLIENT_FAILED_MESSAGE)
             return action_result.get_status()
 
-        person_fields = param.get('person_fields', 'names,emailAddresses')
+        person_fields = param.get("person_fields", "names,emailAddresses")
 
         # Validation for comma-separated value
         fields = [x.strip() for x in person_fields.split(",")]
         fields = list(filter(None, fields))
 
         if not fields:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format('person fields'))
+            return action_result.set_status(phantom.APP_ERROR, INVALID_COMMA_SEPARATED_ERROR_MESSAGE.format("person fields"))
 
         person_fields = ",".join(fields)
 
-        limit = param.get('limit')
+        limit = param.get("limit")
         # Validate 'limit' action parameter
         ret_val, limit = self._validate_integer(action_result, limit, LIMIT_KEY)
         if phantom.is_fail(ret_val):
@@ -454,10 +450,10 @@ class GooglePeopleConnector(BaseConnector):
             action_result.add_data(person)
 
         num_people = len(people)
-        action_result.update_summary({'total_people_returned': num_people})
+        action_result.update_summary({"total_people_returned": num_people})
 
         return action_result.set_status(
-            phantom.APP_SUCCESS, 'Successfully retrieved {} user{}'.format(num_people, '' if num_people == 1 else 's')
+            phantom.APP_SUCCESS, "Successfully retrieved {} user{}".format(num_people, "" if num_people == 1 else "s")
         )
 
     def handle_action(self, param):
@@ -468,22 +464,22 @@ class GooglePeopleConnector(BaseConnector):
 
         self.debug_print("action_id: {}".format(self.get_action_identifier()))
 
-        if action_id == 'test_connectivity':
+        if action_id == "test_connectivity":
             ret_val = self._handle_test_connectivity(param)
 
-        elif action_id == 'list_other_contacts':
+        elif action_id == "list_other_contacts":
             ret_val = self._handle_list_other_contacts(param)
 
-        elif action_id == 'copy_contact':
+        elif action_id == "copy_contact":
             ret_val = self._handle_copy_contact(param)
 
-        elif action_id == 'list_directory':
+        elif action_id == "list_directory":
             ret_val = self._handle_list_directory(param)
 
-        elif action_id == 'get_user_profile':
+        elif action_id == "get_user_profile":
             ret_val = self._handle_get_user_profile(param)
 
-        elif action_id == 'list_people':
+        elif action_id == "list_people":
             ret_val = self._handle_list_people(param)
 
         return ret_val
@@ -492,7 +488,7 @@ class GooglePeopleConnector(BaseConnector):
         config = self.get_config()
         self._state = self.load_state()
 
-        key_json = config['key_json']
+        key_json = config["key_json"]
 
         try:
             self._key_dict = json.loads(key_json)
@@ -500,9 +496,10 @@ class GooglePeopleConnector(BaseConnector):
             err_message = self._get_error_message_from_exception(e)
             self.debug_print("Exception message: {}".format(err_message))
             return self.set_status(
-                phantom.APP_ERROR, "Please provide a valid value for the 'Contents of service account JSON file' asset configuration parameter")
+                phantom.APP_ERROR, "Please provide a valid value for the 'Contents of service account JSON file' asset configuration parameter"
+            )
 
-        self._login_email = config['login_email']
+        self._login_email = config["login_email"]
 
         if not ph_utils.is_email(self._login_email):
             return self.set_status(phantom.APP_ERROR, "Please provide a valid value for the 'Login email' asset configuration parameter")
@@ -514,7 +511,7 @@ class GooglePeopleConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     import argparse
     import sys
@@ -525,10 +522,10 @@ if __name__ == '__main__':
 
     argparser = argparse.ArgumentParser()
 
-    argparser.add_argument('input_test_json', help='Input Test JSON file')
-    argparser.add_argument('-u', '--username', help='username', required=False)
-    argparser.add_argument('-p', '--password', help='password', required=False)
-    argparser.add_argument('-v', '--verify', action='store_true', help='verify', required=False, default=False)
+    argparser.add_argument("input_test_json", help="Input Test JSON file")
+    argparser.add_argument("-u", "--username", help="username", required=False)
+    argparser.add_argument("-p", "--password", help="password", required=False)
+    argparser.add_argument("-v", "--verify", action="store_true", help="verify", required=False, default=False)
 
     args = argparser.parse_args()
     session_id = None
@@ -541,33 +538,35 @@ if __name__ == '__main__':
 
         # User specified a username but not a password, so ask
         import getpass
+
         password = getpass.getpass("Password: ")
 
     if username and password:
-        login_url = BaseConnector._get_phantom_base_url() + '/login'
+        login_url = BaseConnector._get_phantom_base_url() + "/login"
         try:
             print("Accessing the Login page")
-            r = requests.get(login_url, verify=verify)   # nosemgrep: python.requests.best-practice.use-timeout.use-timeout
-            csrftoken = r.cookies['csrftoken']
+            r = requests.get(login_url, verify=verify)  # nosemgrep: python.requests.best-practice.use-timeout.use-timeout
+            csrftoken = r.cookies["csrftoken"]
 
             data = dict()
-            data['username'] = username
-            data['password'] = password
-            data['csrfmiddlewaretoken'] = csrftoken
+            data["username"] = username
+            data["password"] = password
+            data["csrfmiddlewaretoken"] = csrftoken
 
             headers = dict()
-            headers['Cookie'] = 'csrftoken=' + csrftoken
-            headers['Referer'] = login_url
+            headers["Cookie"] = "csrftoken=" + csrftoken
+            headers["Referer"] = login_url
 
             print("Logging into Platform to get the session id")
-            r2 = requests.post(login_url, verify=verify,    # nosemgrep: python.requests.best-practice.use-timeout.use-timeout
-                data=data, headers=headers)
-            session_id = r2.cookies['sessionid']
+            r2 = requests.post(
+                login_url, verify=verify, data=data, headers=headers  # nosemgrep: python.requests.best-practice.use-timeout.use-timeout
+            )
+            session_id = r2.cookies["sessionid"]
         except Exception as e:
             print("Unable to get session id from the platform. Error: " + str(e))
             sys.exit(1)
 
-    if (len(sys.argv) < 2):
+    if len(sys.argv) < 2:
         print("No test json specified as input")
         sys.exit(0)
 
@@ -580,8 +579,8 @@ if __name__ == '__main__':
         connector.print_progress_message = True
 
         if session_id is not None:
-            in_json['user_session_token'] = session_id
-            connector._set_csrf_info(csrftoken, headers['Referer'])
+            in_json["user_session_token"] = session_id
+            connector._set_csrf_info(csrftoken, headers["Referer"])
 
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
