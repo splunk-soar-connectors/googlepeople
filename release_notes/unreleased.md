@@ -1,1 +1,3 @@
 **Unreleased**
+
+* Update setuptools library due to vulnerability, pre-commit updates [PAPP-34907]
