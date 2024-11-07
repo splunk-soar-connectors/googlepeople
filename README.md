@@ -2,7 +2,7 @@
 # Google People
 
 Publisher: Splunk  
-Connector Version: 1.1.6  
+Connector Version: 1.1.7  
 Product Vendor: Google  
 Product Name: Google People  
 Product Version Supported (regex): ".\*"  
