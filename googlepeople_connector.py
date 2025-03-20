@@ -1,6 +1,6 @@
 # File: googlepeople_connector.py
 #
-# Copyright (c) 2021-2024 Splunk Inc.
+# Copyright (c) 2021-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,7 +31,8 @@ from phantom.base_connector import BaseConnector
 
 from googlepeople_consts import *
 
-init_path = "{}/dependencies/google/__init__.py".format(os.path.dirname(os.path.abspath(__file__)))
+
+init_path = f"{os.path.dirname(os.path.abspath(__file__))}/dependencies/google/__init__.py"
 try:
     open(init_path, "a+").close()
 except:
@@ -39,17 +40,14 @@ except:
 
 
 class RetVal(tuple):
-
     def __new__(cls, val1, val2=None):
         return tuple.__new__(RetVal, (val1, val2))
 
 
 class GooglePeopleConnector(BaseConnector):
-
     def __init__(self):
-
         # Call the BaseConnectors init first
-        super(GooglePeopleConnector, self).__init__()
+        super().__init__()
         self._login_email = None
         self._key_dict = None
         self._state = None
@@ -77,9 +75,9 @@ class GooglePeopleConnector(BaseConnector):
 
         try:
             if error_code in ERROR_CODE_MESSAGE:
-                error_text = "Error Message: {0}".format(error_message)
+                error_text = f"Error Message: {error_message}"
             else:
-                error_text = "Error Code: {0}. Error Message: {1}".format(error_code, error_message)
+                error_text = f"Error Code: {error_code}. Error Message: {error_message}"
         except:
             self.debug_print(PARSE_ERROR_MESSAGE)
             error_text = PARSE_ERROR_MESSAGE
@@ -107,24 +105,20 @@ class GooglePeopleConnector(BaseConnector):
             credentials = service_account.Credentials.from_service_account_info(self._key_dict, scopes=scopes)
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
-            return RetVal(
-                action_result.set_status(phantom.APP_ERROR, "Unable to get the credentials from the key json. {}".format(err_message)), None
-            )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Unable to get the credentials from the key json. {err_message}"), None)
 
         if self._login_email:
             try:
                 credentials = credentials.with_subject(self._login_email)
             except Exception as e:
                 err_message = self._get_error_message_from_exception(e)
-                return RetVal(
-                    action_result.set_status(phantom.APP_ERROR, "Failed to create delegated credentials. {}".format(err_message)), None
-                )
+                return RetVal(action_result.set_status(phantom.APP_ERROR, f"Failed to create delegated credentials. {err_message}"), None)
 
         try:
             client = discovery.build("people", "v1", credentials=credentials)
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to create client. {}".format(err_message)), None)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Unable to create client. {err_message}"), None)
 
         return RetVal(phantom.APP_SUCCESS, client)
 
@@ -176,7 +170,6 @@ class GooglePeopleConnector(BaseConnector):
         return list_items
 
     def _handle_test_connectivity(self, param):
-
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_CONTACTS_SCOPE]
 
@@ -187,7 +180,7 @@ class GooglePeopleConnector(BaseConnector):
             self.save_progress("Test Connectivity Failed")
             return action_result.get_status()
 
-        self.save_progress("Getting list of connections for {}".format(self._login_email))
+        self.save_progress(f"Getting list of connections for {self._login_email}")
         try:
             client.people().connections().list(resourceName="people/me", personFields="names,emailAddresses").execute()
         except Exception as e:
@@ -195,7 +188,7 @@ class GooglePeopleConnector(BaseConnector):
             err_message = unescape(
                 UnicodeDammit(self._get_error_message_from_exception(e)).unicode_markup.encode("utf-8").decode("unicode_escape")
             )
-            return action_result.set_status(phantom.APP_ERROR, "Error while listing connections. {}".format(err_message))
+            return action_result.set_status(phantom.APP_ERROR, f"Error while listing connections. {err_message}")
 
         # Return success
         self.save_progress("Test Connectivity Passed")
@@ -232,13 +225,13 @@ class GooglePeopleConnector(BaseConnector):
             otherContacts = self._paginator(client, read_mask, limit)
         except HttpError as e:
             if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_LIST_OTHER_CONTACTS_FAILED_MESSAGE, e._get_reason()))
+                return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_LIST_OTHER_CONTACTS_FAILED_MESSAGE}. {e._get_reason()}")
             err_message = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_message))
+            self.debug_print(f"Exception message: {err_message}")
             return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_OTHER_CONTACTS_FAILED_MESSAGE)
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_message))
+            self.debug_print(f"Exception message: {err_message}")
             return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_OTHER_CONTACTS_FAILED_MESSAGE)
 
         num_otherContacts = len(otherContacts)
@@ -253,7 +246,7 @@ class GooglePeopleConnector(BaseConnector):
         )
 
     def _handle_copy_contact(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -288,13 +281,13 @@ class GooglePeopleConnector(BaseConnector):
             response = client.otherContacts().copyOtherContactToMyContactsGroup(resourceName=resource_name, body=data).execute()
         except HttpError as e:
             if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_COPY_CONTACT_FAILED_MESSAGE, e._get_reason()))
+                return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_COPY_CONTACT_FAILED_MESSAGE}. {e._get_reason()}")
             err_message = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_message))
+            self.debug_print(f"Exception message: {err_message}")
             return action_result.set_status(phantom.APP_ERROR, GOOGLE_COPY_CONTACT_FAILED_MESSAGE)
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_message))
+            self.debug_print(f"Exception message: {err_message}")
             return action_result.set_status(phantom.APP_ERROR, GOOGLE_COPY_CONTACT_FAILED_MESSAGE)
 
         action_result.add_data(response)
@@ -304,7 +297,7 @@ class GooglePeopleConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully copied 1 contact")
 
     def _handle_list_directory(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_DIRECTORY_SCOPE_READ_ONLY]
@@ -336,13 +329,13 @@ class GooglePeopleConnector(BaseConnector):
             directoryPeople = self._paginator(client, read_mask, limit)
         except HttpError as e:
             if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE, e._get_reason()))
+                return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE}. {e._get_reason()}")
             err_message = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_message))
+            self.debug_print(f"Exception message: {err_message}")
             return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE)
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_message))
+            self.debug_print(f"Exception message: {err_message}")
             return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE)
 
         num_directoryPeople = len(directoryPeople)
@@ -356,7 +349,7 @@ class GooglePeopleConnector(BaseConnector):
         )
 
     def _handle_get_user_profile(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_PROFILE_SCOPE, GOOGLE_CONTACTS_SCOPE]
@@ -389,13 +382,13 @@ class GooglePeopleConnector(BaseConnector):
             response = client.people().get(resourceName=resource_name, **kwargs).execute()
         except HttpError as e:
             if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_GET_USER_PROFILE_FAILED_MESSAGE, e._get_reason()))
+                return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_GET_USER_PROFILE_FAILED_MESSAGE}. {e._get_reason()}")
             err_message = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_message))
+            self.debug_print(f"Exception message: {err_message}")
             return action_result.set_status(phantom.APP_ERROR, GOOGLE_GET_USER_PROFILE_FAILED_MESSAGE)
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_message))
+            self.debug_print(f"Exception message: {err_message}")
             return action_result.set_status(phantom.APP_ERROR, GOOGLE_GET_USER_PROFILE_FAILED_MESSAGE)
 
         action_result.add_data(response)
@@ -405,7 +398,7 @@ class GooglePeopleConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully retrieved user profile")
 
     def _handle_list_people(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_CONTACTS_SCOPE]
@@ -437,13 +430,13 @@ class GooglePeopleConnector(BaseConnector):
             people = self._paginator(client, person_fields, limit)
         except HttpError as e:
             if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, "{}. {}".format(GOOGLE_LIST_PEOPLE_FAILED_MESSAGE, e._get_reason()))
+                return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_LIST_PEOPLE_FAILED_MESSAGE}. {e._get_reason()}")
             err_message = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_message))
+            self.debug_print(f"Exception message: {err_message}")
             return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_PEOPLE_FAILED_MESSAGE)
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_message))
+            self.debug_print(f"Exception message: {err_message}")
             return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_PEOPLE_FAILED_MESSAGE)
 
         for person in people:
@@ -462,7 +455,7 @@ class GooglePeopleConnector(BaseConnector):
         # Get the action that we are supposed to execute for this App Run
         action_id = self.get_action_identifier()
 
-        self.debug_print("action_id: {}".format(self.get_action_identifier()))
+        self.debug_print(f"action_id: {self.get_action_identifier()}")
 
         if action_id == "test_connectivity":
             ret_val = self._handle_test_connectivity(param)
@@ -494,7 +487,7 @@ class GooglePeopleConnector(BaseConnector):
             self._key_dict = json.loads(key_json)
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
-            self.debug_print("Exception message: {}".format(err_message))
+            self.debug_print(f"Exception message: {err_message}")
             return self.set_status(
                 phantom.APP_ERROR, "Please provide a valid value for the 'Contents of service account JSON file' asset configuration parameter"
             )
@@ -512,7 +505,6 @@ class GooglePeopleConnector(BaseConnector):
 
 
 if __name__ == "__main__":
-
     import argparse
     import sys
 
@@ -535,7 +527,6 @@ if __name__ == "__main__":
     verify = args.verify
 
     if username is not None and password is None:
-
         # User specified a username but not a password, so ask
         import getpass
 
@@ -559,7 +550,10 @@ if __name__ == "__main__":
 
             print("Logging into Platform to get the session id")
             r2 = requests.post(
-                login_url, verify=verify, data=data, headers=headers  # nosemgrep: python.requests.best-practice.use-timeout.use-timeout
+                login_url,
+                verify=verify,
+                data=data,
+                headers=headers,  # nosemgrep: python.requests.best-practice.use-timeout.use-timeout
             )
             session_id = r2.cookies["sessionid"]
         except Exception as e:
