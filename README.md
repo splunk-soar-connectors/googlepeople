@@ -1,7 +1,7 @@
 # Google People
 
 Publisher: Splunk \
-Connector Version: 1.1.7 \
+Connector Version: 1.1.8 \
 Product Vendor: Google \
 Product Name: Google People \
 Minimum Product Version: 6.2.2
