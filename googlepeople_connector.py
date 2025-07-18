@@ -58,6 +58,9 @@ class GooglePeopleConnector(BaseConnector):
         :return: error message
         """
 
+        error_code = ERROR_CODE_MESSAGE
+        error_message = ERROR_MESSAGE_UNAVAILABLE
+
         try:
             if e.args:
                 if len(e.args) > 1:
