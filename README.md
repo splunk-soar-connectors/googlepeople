@@ -1,9 +1,9 @@
 # Google People
 
-Publisher: Splunk \
-Connector Version: 1.1.8 \
-Product Vendor: Google \
-Product Name: Google People \
+Publisher: Splunk <br>
+Connector Version: 1.1.8 <br>
+Product Vendor: Google <br>
+Product Name: Google People <br>
 Minimum Product Version: 6.2.2
 
 This app integrates with Google People to support various generic and investigative actions
@@ -119,18 +119,18 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration \
-[list other contacts](#action-list-other-contacts) - Lists all contacts that are not in a contact group \
-[copy contact](#action-copy-contact) - Copy 'Other contact' to 'myContacts' group \
-[list directory](#action-list-directory) - Lists all contacts and profiles in the user's domain directory \
-[get user profile](#action-get-user-profile) - Provides information about a person given account ID \
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration <br>
+[list other contacts](#action-list-other-contacts) - Lists all contacts that are not in a contact group <br>
+[copy contact](#action-copy-contact) - Copy 'Other contact' to 'myContacts' group <br>
+[list directory](#action-list-directory) - Lists all contacts and profiles in the user's domain directory <br>
+[get user profile](#action-get-user-profile) - Provides information about a person given account ID <br>
 [list people](#action-list-people) - Lists authenticated user's contacts
 
 ## action: 'test connectivity'
 
 Validate the asset configuration for connectivity using supplied configuration
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -145,7 +145,7 @@ No Output
 
 Lists all contacts that are not in a contact group
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 This action lists all "Other contacts" which are contacts that are not in another contact group. These contacts are typically automatically created from interactions.
@@ -195,7 +195,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Copy 'Other contact' to 'myContacts' group
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -256,7 +256,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Lists all contacts and profiles in the user's domain directory
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -306,7 +306,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Provides information about a person given account ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -356,7 +356,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Lists authenticated user's contacts
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
