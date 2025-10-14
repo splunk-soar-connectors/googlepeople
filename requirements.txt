@@ -1,4 +1,4 @@
-cachetools==2.0.1
+cachetools==6.2.1
 google-auth==2.41.1
 google-auth-httplib2==0.0.4
 google-auth-oauthlib==0.4.1
