@@ -4,7 +4,7 @@ Publisher: Splunk <br>
 Connector Version: 1.1.8 <br>
 Product Vendor: Google <br>
 Product Name: Google People <br>
-Minimum Product Version: 6.2.2
+Minimum Product Version: 6.3.0
 
 This app integrates with Google People to support various generic and investigative actions
 
