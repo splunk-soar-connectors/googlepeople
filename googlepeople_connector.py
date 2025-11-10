@@ -227,11 +227,9 @@ class GooglePeopleConnector(BaseConnector):
         try:
             otherContacts = self._paginator(client, read_mask, limit)
         except HttpError as e:
-            if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_LIST_OTHER_CONTACTS_FAILED_MESSAGE}. {e._get_reason()}")
             err_message = self._get_error_message_from_exception(e)
             self.debug_print(f"Exception message: {err_message}")
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_OTHER_CONTACTS_FAILED_MESSAGE)
+            return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_LIST_OTHER_CONTACTS_FAILED_MESSAGE}. {err_message}")
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
             self.debug_print(f"Exception message: {err_message}")
@@ -283,11 +281,9 @@ class GooglePeopleConnector(BaseConnector):
         try:
             response = client.otherContacts().copyOtherContactToMyContactsGroup(resourceName=resource_name, body=data).execute()
         except HttpError as e:
-            if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_COPY_CONTACT_FAILED_MESSAGE}. {e._get_reason()}")
             err_message = self._get_error_message_from_exception(e)
             self.debug_print(f"Exception message: {err_message}")
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_COPY_CONTACT_FAILED_MESSAGE)
+            return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_COPY_CONTACT_FAILED_MESSAGE}. {err_message}")
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
             self.debug_print(f"Exception message: {err_message}")
@@ -331,11 +327,9 @@ class GooglePeopleConnector(BaseConnector):
         try:
             directoryPeople = self._paginator(client, read_mask, limit)
         except HttpError as e:
-            if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE}. {e._get_reason()}")
             err_message = self._get_error_message_from_exception(e)
             self.debug_print(f"Exception message: {err_message}")
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE)
+            return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE}. {err_message}")
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
             self.debug_print(f"Exception message: {err_message}")
@@ -384,11 +378,9 @@ class GooglePeopleConnector(BaseConnector):
         try:
             response = client.people().get(resourceName=resource_name, **kwargs).execute()
         except HttpError as e:
-            if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_GET_USER_PROFILE_FAILED_MESSAGE}. {e._get_reason()}")
             err_message = self._get_error_message_from_exception(e)
             self.debug_print(f"Exception message: {err_message}")
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_GET_USER_PROFILE_FAILED_MESSAGE)
+            return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_GET_USER_PROFILE_FAILED_MESSAGE}. {err_message}")
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
             self.debug_print(f"Exception message: {err_message}")
@@ -432,11 +424,9 @@ class GooglePeopleConnector(BaseConnector):
         try:
             people = self._paginator(client, person_fields, limit)
         except HttpError as e:
-            if "_get_reason" in dir(e):
-                return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_LIST_PEOPLE_FAILED_MESSAGE}. {e._get_reason()}")
             err_message = self._get_error_message_from_exception(e)
             self.debug_print(f"Exception message: {err_message}")
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_PEOPLE_FAILED_MESSAGE)
+            return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_LIST_PEOPLE_FAILED_MESSAGE}. {err_message}")
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
             self.debug_print(f"Exception message: {err_message}")
