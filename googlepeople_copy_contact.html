@@ -110,7 +110,7 @@
                     {% if resource.resourceName %}
                       <a class="no-word-wrap"
                          href="javascript:;"
-                         onclick="context_menu(this, [{'contains': ['googlepeople resource name'], 'value':'{{ resource.resourceName }}' }], 0, {{ container.id }}, null, false);">
+                         onclick="context_menu(this, [{'contains': ['googlepeople resource name'], 'value':'{{ resource.resourceName|escapejs }}' }], 0, {{ container.id }}, null, false);">
                         {{ resource.resourceName }}
                         &nbsp;
                         <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -125,7 +125,7 @@
                         {% if email.metadata.source.type|lower == "contact" %}
                           <a class="no-word-wrap"
                              href="javascript:;"
-                             onclick="context_menu(this, [{'contains': ['email'], 'value':'{{ email.value }}' }], 0, {{ container.id }}, null, false);">
+                             onclick="context_menu(this, [{'contains': ['email'], 'value':'{{ email.value|escapejs }}' }], 0, {{ container.id }}, null, false);">
                             {{ email.value }}
                             &nbsp;
                             <span class="fa fa-caret-down" style="font-size: smaller;"></span>
