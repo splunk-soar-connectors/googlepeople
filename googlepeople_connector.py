@@ -137,12 +137,21 @@ class GooglePeopleConnector(BaseConnector):
         kwargs = dict()
         list_items = list()
         page_token = None
+        page_count = 0
+        consecutive_empty_pages = 0
+        seen_page_tokens = set()
         action_id = self.get_action_identifier()
         kwargs.update({"pageSize": 1000})
 
         while True:
+            if page_count >= 100:
+                raise RuntimeError("Pagination stopped after reaching the safety limit of 100 pages")
+
             if page_token:
                 kwargs.update({"pageToken": page_token})
+
+            item_count_before_request = len(list_items)
+            page_count += 1
 
             if action_id == "list_other_contacts":
                 kwargs.update({"readMask": fields})
@@ -166,9 +175,26 @@ class GooglePeopleConnector(BaseConnector):
 
             if limit and len(list_items) >= limit:
                 return list_items[:limit]
-            page_token = response.get("nextPageToken")
-            if not page_token:
+
+            next_page_token = response.get("nextPageToken")
+            if not next_page_token:
                 break
+
+            if len(list_items) >= 10000:
+                raise RuntimeError("Pagination stopped after reaching the safety limit of 10000 items")
+
+            if next_page_token in seen_page_tokens:
+                raise RuntimeError("Pagination stopped because the API returned a repeated page token")
+
+            if len(list_items) == item_count_before_request:
+                consecutive_empty_pages += 1
+                if consecutive_empty_pages >= 3:
+                    raise RuntimeError("Pagination stopped after the API returned 3 consecutive empty pages")
+            else:
+                consecutive_empty_pages = 0
+
+            seen_page_tokens.add(next_page_token)
+            page_token = next_page_token
 
         return list_items
 
@@ -233,7 +259,7 @@ class GooglePeopleConnector(BaseConnector):
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
             self.debug_print(f"Exception message: {err_message}")
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_OTHER_CONTACTS_FAILED_MESSAGE)
+            return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_LIST_OTHER_CONTACTS_FAILED_MESSAGE}. {err_message}")
 
         num_otherContacts = len(otherContacts)
 
@@ -333,7 +359,7 @@ class GooglePeopleConnector(BaseConnector):
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
             self.debug_print(f"Exception message: {err_message}")
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE)
+            return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE}. {err_message}")
 
         num_directoryPeople = len(directoryPeople)
         action_result.update_summary({"total_people_returned": num_directoryPeople})
@@ -430,7 +456,7 @@ class GooglePeopleConnector(BaseConnector):
         except Exception as e:
             err_message = self._get_error_message_from_exception(e)
             self.debug_print(f"Exception message: {err_message}")
-            return action_result.set_status(phantom.APP_ERROR, GOOGLE_LIST_PEOPLE_FAILED_MESSAGE)
+            return action_result.set_status(phantom.APP_ERROR, f"{GOOGLE_LIST_PEOPLE_FAILED_MESSAGE}. {err_message}")
 
         for person in people:
             action_result.add_data(person)
