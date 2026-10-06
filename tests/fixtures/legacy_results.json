@@ -1,0 +1,1582 @@
+{
+  "source_commit": "3aa97eabea3cc60fb2ced44c3cfa5ecb0b6f5943",
+  "cases": [
+    {
+      "id": "list_other_contacts-full",
+      "action": "list_other_contacts",
+      "params": {
+        "read_mask": "names,emailAddresses"
+      },
+      "api": {
+        "otherContacts": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/contacts.other.readonly"
+      ],
+      "request": {
+        "pageSize": 1000,
+        "readMask": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          }
+        ],
+        "summary": {
+          "total_otherContacts_returned": 1
+        },
+        "message": "Successfully retrieved 1 otherContact",
+        "status": true
+      }
+    },
+    {
+      "id": "list_other_contacts-missing",
+      "action": "list_other_contacts",
+      "params": {
+        "read_mask": "names,emailAddresses"
+      },
+      "api": {
+        "otherContacts": [
+          {}
+        ]
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/contacts.other.readonly"
+      ],
+      "request": {
+        "pageSize": 1000,
+        "readMask": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {}
+        ],
+        "summary": {
+          "total_otherContacts_returned": 1
+        },
+        "message": "Successfully retrieved 1 otherContact",
+        "status": true
+      }
+    },
+    {
+      "id": "list_other_contacts-null",
+      "action": "list_other_contacts",
+      "params": {
+        "read_mask": "names,emailAddresses"
+      },
+      "api": {
+        "otherContacts": [
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ]
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/contacts.other.readonly"
+      ],
+      "request": {
+        "pageSize": 1000,
+        "readMask": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ],
+        "summary": {
+          "total_otherContacts_returned": 1
+        },
+        "message": "Successfully retrieved 1 otherContact",
+        "status": true
+      }
+    },
+    {
+      "id": "list_other_contacts-multiple",
+      "action": "list_other_contacts",
+      "params": {
+        "read_mask": "names,emailAddresses"
+      },
+      "api": {
+        "otherContacts": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          },
+          {},
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ]
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/contacts.other.readonly"
+      ],
+      "request": {
+        "pageSize": 1000,
+        "readMask": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          },
+          {},
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ],
+        "summary": {
+          "total_otherContacts_returned": 3
+        },
+        "message": "Successfully retrieved 3 otherContacts",
+        "status": true
+      }
+    },
+    {
+      "id": "copy_contact-full",
+      "action": "copy_contact",
+      "params": {
+        "copy_mask": "names,emailAddresses,phoneNumbers",
+        "resource_name": "otherContacts/123"
+      },
+      "api": {
+        "resourceName": "people/123",
+        "etag": "sample",
+        "names": [
+          {
+            "displayName": "Sample User",
+            "metadata": {
+              "primary": true,
+              "source": {
+                "type": "CONTACT",
+                "id": "123",
+                "newSourceField": 7
+              }
+            },
+            "extraName": [
+              1,
+              2
+            ]
+          }
+        ],
+        "emailAddresses": [
+          {
+            "value": "sample@example.com",
+            "metadata": {
+              "source": {
+                "type": "CONTACT"
+              },
+              "primary": true
+            },
+            "extraEmail": null
+          }
+        ],
+        "phoneNumbers": [
+          {
+            "value": "+100000000",
+            "newPhone": true
+          }
+        ],
+        "newApiField": {
+          "nested": [
+            {
+              "opaque": "kept"
+            }
+          ]
+        },
+        "metadata": {
+          "sources": [
+            {
+              "type": "CONTACT",
+              "profileMetadata": {
+                "userTypes": [
+                  "GOOGLE_USER"
+                ]
+              },
+              "extra": 42
+            }
+          ]
+        }
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/contacts",
+        "https://www.googleapis.com/auth/contacts.other.readonly"
+      ],
+      "request": {
+        "resourceName": "otherContacts/123",
+        "body": {
+          "copyMask": "names,emailAddresses,phoneNumbers"
+        }
+      },
+      "expected": {
+        "data": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          }
+        ],
+        "summary": {
+          "total_contacts_copied": 1
+        },
+        "message": "Successfully copied 1 contact",
+        "status": true
+      }
+    },
+    {
+      "id": "copy_contact-missing",
+      "action": "copy_contact",
+      "params": {
+        "copy_mask": "names,emailAddresses,phoneNumbers",
+        "resource_name": "otherContacts/123"
+      },
+      "api": {},
+      "scopes": [
+        "https://www.googleapis.com/auth/contacts",
+        "https://www.googleapis.com/auth/contacts.other.readonly"
+      ],
+      "request": {
+        "resourceName": "otherContacts/123",
+        "body": {
+          "copyMask": "names,emailAddresses,phoneNumbers"
+        }
+      },
+      "expected": {
+        "data": [
+          {}
+        ],
+        "summary": {
+          "total_contacts_copied": 1
+        },
+        "message": "Successfully copied 1 contact",
+        "status": true
+      }
+    },
+    {
+      "id": "copy_contact-null",
+      "action": "copy_contact",
+      "params": {
+        "copy_mask": "names,emailAddresses,phoneNumbers",
+        "resource_name": "otherContacts/123"
+      },
+      "api": {
+        "resourceName": null,
+        "names": null,
+        "emailAddresses": [],
+        "newApiField": false
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/contacts",
+        "https://www.googleapis.com/auth/contacts.other.readonly"
+      ],
+      "request": {
+        "resourceName": "otherContacts/123",
+        "body": {
+          "copyMask": "names,emailAddresses,phoneNumbers"
+        }
+      },
+      "expected": {
+        "data": [
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ],
+        "summary": {
+          "total_contacts_copied": 1
+        },
+        "message": "Successfully copied 1 contact",
+        "status": true
+      }
+    },
+    {
+      "id": "list_directory-full",
+      "action": "list_directory",
+      "params": {
+        "read_mask": "names,emailAddresses"
+      },
+      "api": {
+        "people": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/directory.readonly"
+      ],
+      "request": {
+        "pageSize": 1000,
+        "sources": [
+          "DIRECTORY_SOURCE_TYPE_DOMAIN_CONTACT",
+          "DIRECTORY_SOURCE_TYPE_DOMAIN_PROFILE"
+        ],
+        "readMask": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          }
+        ],
+        "summary": {
+          "total_people_returned": 1
+        },
+        "message": "Successfully retrieved 1 person",
+        "status": true
+      }
+    },
+    {
+      "id": "list_directory-missing",
+      "action": "list_directory",
+      "params": {
+        "read_mask": "names,emailAddresses"
+      },
+      "api": {
+        "people": [
+          {}
+        ]
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/directory.readonly"
+      ],
+      "request": {
+        "pageSize": 1000,
+        "sources": [
+          "DIRECTORY_SOURCE_TYPE_DOMAIN_CONTACT",
+          "DIRECTORY_SOURCE_TYPE_DOMAIN_PROFILE"
+        ],
+        "readMask": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {}
+        ],
+        "summary": {
+          "total_people_returned": 1
+        },
+        "message": "Successfully retrieved 1 person",
+        "status": true
+      }
+    },
+    {
+      "id": "list_directory-null",
+      "action": "list_directory",
+      "params": {
+        "read_mask": "names,emailAddresses"
+      },
+      "api": {
+        "people": [
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ]
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/directory.readonly"
+      ],
+      "request": {
+        "pageSize": 1000,
+        "sources": [
+          "DIRECTORY_SOURCE_TYPE_DOMAIN_CONTACT",
+          "DIRECTORY_SOURCE_TYPE_DOMAIN_PROFILE"
+        ],
+        "readMask": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ],
+        "summary": {
+          "total_people_returned": 1
+        },
+        "message": "Successfully retrieved 1 person",
+        "status": true
+      }
+    },
+    {
+      "id": "list_directory-multiple",
+      "action": "list_directory",
+      "params": {
+        "read_mask": "names,emailAddresses"
+      },
+      "api": {
+        "people": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          },
+          {},
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ]
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/directory.readonly"
+      ],
+      "request": {
+        "pageSize": 1000,
+        "sources": [
+          "DIRECTORY_SOURCE_TYPE_DOMAIN_CONTACT",
+          "DIRECTORY_SOURCE_TYPE_DOMAIN_PROFILE"
+        ],
+        "readMask": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          },
+          {},
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ],
+        "summary": {
+          "total_people_returned": 3
+        },
+        "message": "Successfully retrieved 3 people",
+        "status": true
+      }
+    },
+    {
+      "id": "get_user_profile-full",
+      "action": "get_user_profile",
+      "params": {
+        "person_fields": "names,emailAddresses",
+        "resource_name": "people/123"
+      },
+      "api": {
+        "resourceName": "people/123",
+        "etag": "sample",
+        "names": [
+          {
+            "displayName": "Sample User",
+            "metadata": {
+              "primary": true,
+              "source": {
+                "type": "CONTACT",
+                "id": "123",
+                "newSourceField": 7
+              }
+            },
+            "extraName": [
+              1,
+              2
+            ]
+          }
+        ],
+        "emailAddresses": [
+          {
+            "value": "sample@example.com",
+            "metadata": {
+              "source": {
+                "type": "CONTACT"
+              },
+              "primary": true
+            },
+            "extraEmail": null
+          }
+        ],
+        "phoneNumbers": [
+          {
+            "value": "+100000000",
+            "newPhone": true
+          }
+        ],
+        "newApiField": {
+          "nested": [
+            {
+              "opaque": "kept"
+            }
+          ]
+        },
+        "metadata": {
+          "sources": [
+            {
+              "type": "CONTACT",
+              "profileMetadata": {
+                "userTypes": [
+                  "GOOGLE_USER"
+                ]
+              },
+              "extra": 42
+            }
+          ]
+        }
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/contacts"
+      ],
+      "request": {
+        "resourceName": "people/123",
+        "sources": [
+          "READ_SOURCE_TYPE_CONTACT"
+        ],
+        "personFields": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          }
+        ],
+        "summary": {
+          "resource_id_returned": "people/123"
+        },
+        "message": "Successfully retrieved user profile",
+        "status": true
+      }
+    },
+    {
+      "id": "get_user_profile-missing",
+      "action": "get_user_profile",
+      "params": {
+        "person_fields": "names,emailAddresses",
+        "resource_name": "people/123"
+      },
+      "api": {},
+      "scopes": [
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/contacts"
+      ],
+      "request": {
+        "resourceName": "people/123",
+        "sources": [
+          "READ_SOURCE_TYPE_CONTACT"
+        ],
+        "personFields": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {}
+        ],
+        "summary": {
+          "resource_id_returned": null
+        },
+        "message": "Successfully retrieved user profile",
+        "status": true
+      }
+    },
+    {
+      "id": "get_user_profile-null",
+      "action": "get_user_profile",
+      "params": {
+        "person_fields": "names,emailAddresses",
+        "resource_name": "people/123"
+      },
+      "api": {
+        "resourceName": null,
+        "names": null,
+        "emailAddresses": [],
+        "newApiField": false
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/contacts"
+      ],
+      "request": {
+        "resourceName": "people/123",
+        "sources": [
+          "READ_SOURCE_TYPE_CONTACT"
+        ],
+        "personFields": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ],
+        "summary": {
+          "resource_id_returned": null
+        },
+        "message": "Successfully retrieved user profile",
+        "status": true
+      }
+    },
+    {
+      "id": "list_people-full",
+      "action": "list_people",
+      "params": {
+        "person_fields": "names,emailAddresses"
+      },
+      "api": {
+        "connections": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/contacts"
+      ],
+      "request": {
+        "resourceName": "people/me",
+        "pageSize": 1000,
+        "sources": [
+          "READ_SOURCE_TYPE_CONTACT"
+        ],
+        "personFields": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          }
+        ],
+        "summary": {
+          "total_people_returned": 1
+        },
+        "message": "Successfully retrieved 1 user",
+        "status": true
+      }
+    },
+    {
+      "id": "list_people-missing",
+      "action": "list_people",
+      "params": {
+        "person_fields": "names,emailAddresses"
+      },
+      "api": {
+        "connections": [
+          {}
+        ]
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/contacts"
+      ],
+      "request": {
+        "resourceName": "people/me",
+        "pageSize": 1000,
+        "sources": [
+          "READ_SOURCE_TYPE_CONTACT"
+        ],
+        "personFields": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {}
+        ],
+        "summary": {
+          "total_people_returned": 1
+        },
+        "message": "Successfully retrieved 1 user",
+        "status": true
+      }
+    },
+    {
+      "id": "list_people-null",
+      "action": "list_people",
+      "params": {
+        "person_fields": "names,emailAddresses"
+      },
+      "api": {
+        "connections": [
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ]
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/contacts"
+      ],
+      "request": {
+        "resourceName": "people/me",
+        "pageSize": 1000,
+        "sources": [
+          "READ_SOURCE_TYPE_CONTACT"
+        ],
+        "personFields": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ],
+        "summary": {
+          "total_people_returned": 1
+        },
+        "message": "Successfully retrieved 1 user",
+        "status": true
+      }
+    },
+    {
+      "id": "list_people-multiple",
+      "action": "list_people",
+      "params": {
+        "person_fields": "names,emailAddresses"
+      },
+      "api": {
+        "connections": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          },
+          {},
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ]
+      },
+      "scopes": [
+        "https://www.googleapis.com/auth/contacts"
+      ],
+      "request": {
+        "resourceName": "people/me",
+        "pageSize": 1000,
+        "sources": [
+          "READ_SOURCE_TYPE_CONTACT"
+        ],
+        "personFields": "names,emailAddresses"
+      },
+      "expected": {
+        "data": [
+          {
+            "resourceName": "people/123",
+            "etag": "sample",
+            "names": [
+              {
+                "displayName": "Sample User",
+                "metadata": {
+                  "primary": true,
+                  "source": {
+                    "type": "CONTACT",
+                    "id": "123",
+                    "newSourceField": 7
+                  }
+                },
+                "extraName": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "emailAddresses": [
+              {
+                "value": "sample@example.com",
+                "metadata": {
+                  "source": {
+                    "type": "CONTACT"
+                  },
+                  "primary": true
+                },
+                "extraEmail": null
+              }
+            ],
+            "phoneNumbers": [
+              {
+                "value": "+100000000",
+                "newPhone": true
+              }
+            ],
+            "newApiField": {
+              "nested": [
+                {
+                  "opaque": "kept"
+                }
+              ]
+            },
+            "metadata": {
+              "sources": [
+                {
+                  "type": "CONTACT",
+                  "profileMetadata": {
+                    "userTypes": [
+                      "GOOGLE_USER"
+                    ]
+                  },
+                  "extra": 42
+                }
+              ]
+            }
+          },
+          {},
+          {
+            "resourceName": null,
+            "names": null,
+            "emailAddresses": [],
+            "newApiField": false
+          }
+        ],
+        "summary": {
+          "total_people_returned": 3
+        },
+        "message": "Successfully retrieved 3 users",
+        "status": true
+      }
+    }
+  ]
+}

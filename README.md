@@ -4,9 +4,9 @@ Publisher: Splunk <br>
 Connector Version: 1.1.11 <br>
 Product Vendor: Google <br>
 Product Name: Google People <br>
-Minimum Product Version: 6.3.0
+Minimum Product Version: 7.0.0
 
-This app integrates with Google People to support various generic and investigative actions
+This app integrates with Google People to support investigative actions and authenticated requests to Google People API v1.
 
 ## SDK and SDK Licensing details for the app
 
@@ -49,6 +49,10 @@ This app uses the oauth2client module, which is licensed under the Apache Softwa
 
 This app uses the pyasn1-modules module, which is licensed under the BSD License (BSD-2-Clause),
 Copyright (c) Ilya Etingof.
+
+#### requests
+
+This app uses the requests module, which is licensed under the Apache License, Version 2.0.
 
 #### rsa
 
@@ -119,19 +123,22 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration <br>
-[list other contacts](#action-list-other-contacts) - Lists all contacts that are not in a contact group <br>
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration. <br>
 [copy contact](#action-copy-contact) - Copy 'Other contact' to 'myContacts' group <br>
-[list directory](#action-list-directory) - Lists all contacts and profiles in the user's domain directory <br>
 [get user profile](#action-get-user-profile) - Provides information about a person given account ID <br>
-[list people](#action-list-people) - Lists authenticated user's contacts
+[list directory](#action-list-directory) - Lists all contacts and profiles in the user's domain directory <br>
+[list other contacts](#action-list-other-contacts) - Lists all contacts that are not in a contact group <br>
+[list people](#action-list-people) - Lists authenticated user's contacts <br>
+[make request](#action-make-request) - Send an authenticated request to a relative Google People API v1 endpoint.
 
 ## action: 'test connectivity'
 
-Validate the asset configuration for connectivity using supplied configuration
+Validate the asset configuration for connectivity using supplied configuration.
 
 Type: **test** <br>
 Read only: **True**
+
+Basic test for app.
 
 #### Action Parameters
 
@@ -139,55 +146,10 @@ No parameters are required for this action
 
 #### Action Output
 
-No Output
-
-## action: 'list other contacts'
-
-Lists all contacts that are not in a contact group
-
-Type: **investigate** <br>
-Read only: **True**
-
-This action lists all "Other contacts" which are contacts that are not in another contact group. These contacts are typically automatically created from interactions.
-
-#### Action Parameters
-
-PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
---------- | -------- | ----------- | ---- | --------
-**read_mask** | optional | Comma-separated list of fields to be returned for each person. If not provided, default values will be used | string | |
-**limit** | optional | Number of contacts to include in the response | numeric | |
-
-#### Action Output
-
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.parameter.read_mask | string | | names,emailAddresses |
-action_result.parameter.limit | numeric | | 500 |
-action_result.data.\*.etag | string | | %EgcBAj0JPjcuGgECIgxwRmJmNytycjB4RT0= |
-action_result.data.\*.names.\*.metadata.source.id | string | | 6babaf04880e3563 |
-action_result.data.\*.names.\*.metadata.source.type | string | | OTHER_CONTACT |
-action_result.data.\*.names.\*.metadata.primary | boolean | | True False |
-action_result.data.\*.names.\*.givenName | string | | Test user |
-action_result.data.\*.names.\*.familyName | string | | Test user |
-action_result.data.\*.names.\*.displayName | string | | Test user |
-action_result.data.\*.names.\*.unstructuredName | string | | Test user |
-action_result.data.\*.names.\*.displayNameLastFirst | string | | Test, user |
-action_result.data.\*.names.\*.middleName | string | | Test user |
-action_result.data.\*.resourceName | string | `googlepeople resource name` | otherContacts/c7758487217073173859 |
-action_result.data.\*.emailAddresses.\*.value | string | `email` | user@example.com |
-action_result.data.\*.emailAddresses.\*.metadata.source.id | string | | 6babaf04880e3563 |
-action_result.data.\*.emailAddresses.\*.metadata.source.type | string | | OTHER_CONTACT |
-action_result.data.\*.emailAddresses.\*.metadata.primary | boolean | | True False |
-action_result.data.\*.emailAddresses.\*.type | string | | other |
-action_result.data.\*.emailAddresses.\*.formattedType | string | | Other |
-action_result.data.\*.metadata.sources.\*.id | string | | 6babaf04880e3563 |
-action_result.data.\*.metadata.sources.\*.etag | string | | #pFbf7+rr0xE= |
-action_result.data.\*.metadata.sources.\*.type | string | | OTHER_CONTACT |
-action_result.data.\*.metadata.sources.\*.updateTime | string | | 2017-05-24T23:40:54.632001Z |
-action_result.data.\*.metadata.objectType | string | | PERSON |
-action_result.status | string | | success failed |
-action_result.message | string | | Successfully retrieved 6 otherContactss |
-action_result.summary.total_otherContacts_returned | numeric | | 6 |
+action_result.status | string | | success failure |
+action_result.message | string | | |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
 
@@ -209,8 +171,10 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.parameter.resource_name | string | `googlepeople resource name` | otherContacts/c8038824399000987793 |
-action_result.parameter.copy_mask | string | | names,emailAddresses,phoneNumbers |
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.resource_name | string | `googlepeople resource name` | |
+action_result.parameter.copy_mask | string | | |
 action_result.data.\*.etag | string | | %EgcBAj0JPjcuGgQBAgUHIgxkaU5rT3hHZm5BVT0= |
 action_result.data.\*.metadata.sources.\*.id | string | | 59b7075988160d30 |
 action_result.data.\*.metadata.sources.\*.etag | string | | #diNkOxGfnAU= |
@@ -231,12 +195,12 @@ action_result.data.\*.phoneNumbers.\*.metadata.source.type | string | | CONTACT 
 action_result.data.\*.phoneNumbers.\*.metadata.primary | boolean | | True False |
 action_result.data.\*.phoneNumbers.\*.canonicalForm | string | | |
 action_result.data.\*.emailAddresses.\*.metadata.verified | boolean | | True False |
-action_result.data.\*.emailAddresses.\*.value | string | `email` | user@example.com |
-action_result.data.\*.emailAddresses.\*.type | string | | other |
-action_result.data.\*.emailAddresses.\*.formattedType | string | | Other |
 action_result.data.\*.emailAddresses.\*.metadata.source.id | string | | 59b7075988160d30 |
 action_result.data.\*.emailAddresses.\*.metadata.source.type | string | | CONTACT |
 action_result.data.\*.emailAddresses.\*.metadata.primary | boolean | | True False |
+action_result.data.\*.emailAddresses.\*.value | string | `email` | user@example.com |
+action_result.data.\*.emailAddresses.\*.type | string | | other |
+action_result.data.\*.emailAddresses.\*.formattedType | string | | Other |
 action_result.data.\*.names.\*.metadata.source.id | string | | 71d4a4d58a0990ed |
 action_result.data.\*.names.\*.metadata.source.type | string | | CONTACT |
 action_result.data.\*.names.\*.metadata.primary | boolean | | True False |
@@ -246,59 +210,7 @@ action_result.data.\*.names.\*.displayName | string | | Test user |
 action_result.data.\*.names.\*.unstructuredName | string | | Test user |
 action_result.data.\*.names.\*.displayNameLastFirst | string | | Test, user |
 action_result.data.\*.names.\*.middleName | string | | Test user |
-action_result.status | string | | success failed |
-action_result.message | string | | Successfully copied 1 contact |
 action_result.summary.total_contacts_copied | numeric | | 1 |
-summary.total_objects | numeric | | 1 |
-summary.total_objects_successful | numeric | | 1 |
-
-## action: 'list directory'
-
-Lists all contacts and profiles in the user's domain directory
-
-Type: **investigate** <br>
-Read only: **True**
-
-#### Action Parameters
-
-PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
---------- | -------- | ----------- | ---- | --------
-**read_mask** | optional | Comma-separated list of fields to be returned for each person. If not provided, default values will be used | string | |
-**limit** | optional | Number of responses to include in the response | numeric | |
-
-#### Action Output
-
-DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
---------- | ---- | -------- | --------------
-action_result.parameter.read_mask | string | | names,emailAddresses |
-action_result.parameter.limit | numeric | | 100 |
-action_result.data.\*.etag | string | | %EgcBAj0JPjcuGgMBBwg= |
-action_result.data.\*.resourceName | string | `googlepeople resource name` | people/113211632970586460828 |
-action_result.data.\*.names.\*.metadata.source.id | string | | 7c6136a10b0a9c93 |
-action_result.data.\*.names.\*.metadata.source.type | string | | CONTACT |
-action_result.data.\*.names.\*.metadata.primary | boolean | | True False |
-action_result.data.\*.names.\*.givenName | string | | Test user |
-action_result.data.\*.names.\*.familyName | string | | Test user |
-action_result.data.\*.names.\*.displayName | string | | Test user |
-action_result.data.\*.names.\*.unstructuredName | string | | Test user |
-action_result.data.\*.names.\*.displayNameLastFirst | string | | Test, user |
-action_result.data.\*.names.\*.middleName | string | | Test user |
-action_result.data.\*.emailAddresses.\*.value | string | `email` | user@example.com |
-action_result.data.\*.emailAddresses.\*.metadata.source.id | string | | 117111371020715649097 |
-action_result.data.\*.emailAddresses.\*.metadata.source.type | string | | DOMAIN_PROFILE |
-action_result.data.\*.emailAddresses.\*.metadata.primary | boolean | | True False |
-action_result.data.\*.emailAddresses.\*.metadata.verified | boolean | | True False |
-action_result.data.\*.emailAddresses.\*.type | string | | work |
-action_result.data.\*.emailAddresses.\*.formattedType | string | | Work |
-action_result.data.\*.phoneNumbers.\*.type | string | | work |
-action_result.data.\*.phoneNumbers.\*.value | string | | |
-action_result.data.\*.phoneNumbers.\*.metadata.source.id | string | | 107701908237315216077 |
-action_result.data.\*.phoneNumbers.\*.metadata.source.type | string | | DOMAIN_PROFILE |
-action_result.data.\*.phoneNumbers.\*.metadata.primary | boolean | | True |
-action_result.data.\*.phoneNumbers.\*.formattedType | string | | Work |
-action_result.status | string | | success failed |
-action_result.message | string | | Successfully retrieved 7 peoples |
-action_result.summary.total_people_returned | numeric | | 7 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
 
@@ -320,8 +232,10 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.parameter.resource_name | string | `googlepeople resource name` | people/116919555361086422724 |
-action_result.parameter.person_fields | string | | names,emailAddresses |
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.resource_name | string | `googlepeople resource name` | |
+action_result.parameter.person_fields | string | | |
 action_result.data.\*.metadata.sources.\*.id | string | | 7d369160095862fe |
 action_result.data.\*.metadata.sources.\*.etag | string | | #JgTYM+ybUz4= |
 action_result.data.\*.metadata.sources.\*.type | string | | CONTACT |
@@ -346,9 +260,107 @@ action_result.data.\*.emailAddresses.\*.metadata.source.id | string | | 11691955
 action_result.data.\*.emailAddresses.\*.metadata.source.type | string | | DOMAIN_PROFILE |
 action_result.data.\*.emailAddresses.\*.metadata.primary | boolean | | True False |
 action_result.data.\*.emailAddresses.\*.metadata.verified | boolean | | True False |
-action_result.status | string | | success failed |
-action_result.message | string | | Successfully retrieved user profile |
 action_result.summary.resource_id_returned | string | | people/113211632970586460828 |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'list directory'
+
+Lists all contacts and profiles in the user's domain directory
+
+Type: **investigate** <br>
+Read only: **True**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**read_mask** | optional | Comma-separated list of fields to be returned for each person. If not provided, default values will be used | string | |
+**limit** | optional | Number of responses to include in the response | numeric | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.read_mask | string | | |
+action_result.parameter.limit | numeric | | |
+action_result.data.\*.etag | string | | %EgcBAj0JPjcuGgMBBwg= |
+action_result.data.\*.resourceName | string | `googlepeople resource name` | people/113211632970586460828 |
+action_result.data.\*.names.\*.metadata.source.id | string | | 7c6136a10b0a9c93 |
+action_result.data.\*.names.\*.metadata.source.type | string | | CONTACT |
+action_result.data.\*.names.\*.metadata.primary | boolean | | True False |
+action_result.data.\*.names.\*.givenName | string | | Test user |
+action_result.data.\*.names.\*.familyName | string | | Test user |
+action_result.data.\*.names.\*.displayName | string | | Test user |
+action_result.data.\*.names.\*.unstructuredName | string | | Test user |
+action_result.data.\*.names.\*.displayNameLastFirst | string | | Test, user |
+action_result.data.\*.names.\*.middleName | string | | Test user |
+action_result.data.\*.emailAddresses.\*.value | string | `email` | user@example.com |
+action_result.data.\*.emailAddresses.\*.metadata.source.id | string | | 117111371020715649097 |
+action_result.data.\*.emailAddresses.\*.metadata.source.type | string | | DOMAIN_PROFILE |
+action_result.data.\*.emailAddresses.\*.metadata.primary | boolean | | True False |
+action_result.data.\*.emailAddresses.\*.metadata.verified | boolean | | True False |
+action_result.data.\*.emailAddresses.\*.type | string | | work |
+action_result.data.\*.emailAddresses.\*.formattedType | string | | Work |
+action_result.data.\*.phoneNumbers.\*.type | string | | work |
+action_result.data.\*.phoneNumbers.\*.value | string | | |
+action_result.data.\*.phoneNumbers.\*.metadata.source.id | string | | 107701908237315216077 |
+action_result.data.\*.phoneNumbers.\*.metadata.source.type | string | | DOMAIN_PROFILE |
+action_result.data.\*.phoneNumbers.\*.metadata.primary | boolean | | True False |
+action_result.data.\*.phoneNumbers.\*.formattedType | string | | Work |
+action_result.summary.total_people_returned | numeric | | 7 |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'list other contacts'
+
+Lists all contacts that are not in a contact group
+
+Type: **investigate** <br>
+Read only: **True**
+
+This action lists all "Other contacts" which are contacts that are not in another contact group. These contacts are typically automatically created from interactions.
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**read_mask** | optional | Comma-separated list of fields to be returned for each person. If not provided, default values will be used | string | |
+**limit** | optional | Number of contacts to include in the response | numeric | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.read_mask | string | | |
+action_result.parameter.limit | numeric | | |
+action_result.data.\*.etag | string | | %EgcBAj0JPjcuGgECIgxwRmJmNytycjB4RT0= |
+action_result.data.\*.names.\*.metadata.source.id | string | | 6babaf04880e3563 |
+action_result.data.\*.names.\*.metadata.source.type | string | | OTHER_CONTACT |
+action_result.data.\*.names.\*.metadata.primary | boolean | | True False |
+action_result.data.\*.names.\*.givenName | string | | Test user |
+action_result.data.\*.names.\*.familyName | string | | Test user |
+action_result.data.\*.names.\*.displayName | string | | Test user |
+action_result.data.\*.names.\*.unstructuredName | string | | Test user |
+action_result.data.\*.names.\*.displayNameLastFirst | string | | Test, user |
+action_result.data.\*.names.\*.middleName | string | | Test user |
+action_result.data.\*.resourceName | string | `googlepeople resource name` | otherContacts/c7758487217073173859 |
+action_result.data.\*.emailAddresses.\*.value | string | `email` | user@example.com |
+action_result.data.\*.emailAddresses.\*.metadata.source.id | string | | 6babaf04880e3563 |
+action_result.data.\*.emailAddresses.\*.metadata.source.type | string | | OTHER_CONTACT |
+action_result.data.\*.emailAddresses.\*.metadata.primary | boolean | | True False |
+action_result.data.\*.emailAddresses.\*.type | string | | other |
+action_result.data.\*.emailAddresses.\*.formattedType | string | | Other |
+action_result.data.\*.metadata.sources.\*.id | string | | 6babaf04880e3563 |
+action_result.data.\*.metadata.sources.\*.etag | string | | #pFbf7+rr0xE= |
+action_result.data.\*.metadata.sources.\*.type | string | | OTHER_CONTACT |
+action_result.data.\*.metadata.sources.\*.updateTime | string | | 2017-05-24T23:40:54.632001Z |
+action_result.data.\*.metadata.objectType | string | | PERSON |
+action_result.summary.total_otherContacts_returned | numeric | | 6 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
 
@@ -370,8 +382,10 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.parameter.person_fields | string | | names,emailAddresses |
-action_result.parameter.limit | numeric | | 100 |
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.person_fields | string | | |
+action_result.parameter.limit | numeric | | |
 action_result.data.\*.names.\*.metadata.source.id | string | | 7c6136a10b0a9c93 |
 action_result.data.\*.names.\*.metadata.source.type | string | | CONTACT |
 action_result.data.\*.names.\*.metadata.primary | boolean | | True False |
@@ -400,12 +414,38 @@ action_result.data.\*.birthdays.\*.date.month | numeric | | 1 |
 action_result.data.\*.birthdays.\*.text | string | | 1990-01-01 |
 action_result.data.\*.birthdays.\*.metadata.source.id | string | | 75b1dd3c0f20cb95 |
 action_result.data.\*.birthdays.\*.metadata.source.type | string | | CONTACT |
-action_result.data.\*.birthdays.\*.metadata.primary | boolean | | True |
-action_result.status | string | | success failed |
-action_result.message | string | | Successfully retrieved 15 users |
+action_result.data.\*.birthdays.\*.metadata.primary | boolean | | True False |
 action_result.summary.total_people_returned | numeric | | 1 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
+
+## action: 'make request'
+
+Send an authenticated request to a relative Google People API v1 endpoint.
+
+Type: **generic** <br>
+Read only: **False**
+
+Use a relative endpoint under `/v1/`, for example `/v1/people:searchContacts`. Requests are sent only to `https://people.googleapis.com` and use the Google Contacts scope with the configured service-account delegation. Absolute URLs, query strings in the endpoint, fragments, path traversal, and caller-supplied authorization/host headers are rejected. Query parameters can be provided as a JSON object or a query string. Non-2xx HTTP responses are returned in the action output for playbook handling.
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE
+--------- | -------- | ----------- | ----
+**http_method** | required | The HTTP method to use for the request. | string
+**endpoint** | required | Relative Google People API v1 endpoint, such as `/v1/people:searchContacts`. | string
+**headers** | optional | Headers to send as a JSON object. Authorization, host, cookie and framing headers are managed by the app. | string
+**query_parameters** | optional | Query parameters as a JSON object or URL-encoded query string. | string
+**body** | optional | Request body. Valid JSON is parsed when the content type is JSON. | string
+**timeout** | optional | Request timeout in seconds. Defaults to 30 seconds. | numeric
+**verify_ssl** | optional | Whether to verify the SSL certificate. Defaults to true. | boolean
+
+#### Action Output
+
+DATA PATH | TYPE | EXAMPLE VALUES
+--------- | ---- | --------------
+action_result.data.*.status_code | numeric | 200, 404, 500
+action_result.data.*.response_body | string | `{"key": "value"}`
 
 ______________________________________________________________________
 
