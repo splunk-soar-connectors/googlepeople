@@ -7,3 +7,4 @@
 * Add unit regression coverage for complete serialized results, missing fields, explicit null summaries, undeclared API fields, authentication, validation and pagination safeguards.
 * Reject blank or whitespace-only resource names in get user profile before creating the Google client, restoring legacy required-parameter validation.
 * Omit the configured login email from connectivity progress messages.
+* Add a `make_request` action for Google People API v1 endpoints, restricted to the People API host and Contacts scope.

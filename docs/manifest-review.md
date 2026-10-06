@@ -12,6 +12,7 @@ Review compares the built SDK archive manifest with the manifest at baseline com
 | list directory | 31 | 31 | All legacy datapaths, types, CEF metadata and columns match |
 | get user profile | 31 | 31 | All legacy datapaths, types, CEF metadata and columns match |
 | list people | 36 | 36 | All legacy datapaths, types, CEF metadata and columns match |
+| make request | N/A | 13 | New SDK-only action; exposes request parameters, HTTP status and response body |
 
 Configuration field names, descriptions, required flags, order and password sensitivity match. App ID, package name, product metadata, FIPS flag and app version 1.1.11 match.
 
@@ -31,7 +32,7 @@ Configuration field names, descriptions, required flags, order and password sens
 - Python support changes from 3.9 and 3.13 to 3.13. Python 3.14 is disabled.
 - Main module changes from `googlepeople_connector.py` to `src.app:app`.
 - SDK connectivity returns its standard success message. SDK action failures add an action-name prefix to preserved legacy error text.
-- Third-party dependencies are resolved by `uv.lock` and bundled by the SDK for Linux x86_64 and aarch64. Existing direct Google dependency pins are retained; transitive versions and the SDK dependency graph change.
+- Third-party dependencies are resolved by `uv.lock` and bundled by the SDK for Linux x86_64 and aarch64. Existing direct Google dependency pins are retained; `requests` is added for the make request action.
 - SDK packaging adds `packaged_by`, updates build time and emits empty Python 3.9/3.14 dependency sections. All referenced Python 3.13 wheels are present in the archive.
 
 ## Repository preservation

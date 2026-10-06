@@ -28,7 +28,7 @@ def test_app_identity_and_supported_runtime():
 
 
 def test_all_legacy_actions_registered():
-    assert set(app.get_actions()) == {a["identifier"] for a in LEGACY["actions"]}
+    assert set(app.get_actions()) == {a["identifier"] for a in LEGACY["actions"]} | {"make_request"}
 
 
 @pytest.mark.parametrize("legacy", LEGACY["actions"], ids=lambda action: action["identifier"])

@@ -50,21 +50,21 @@ The copy-contact and directory custom views retain the `googlepeople` wrapper an
 column order. Their templates use Jinja, a numeric container ID and HTML-escaped
 JSON values for context menus.
 
-## Generic make request evaluation
+## Make request action
 
-A generic authenticated request action would provide useful coverage: Google's
-[contact creation](https://developers.google.com/people/api/rest/v1/people/createContact),
-[contact groups](https://developers.google.com/people/api/rest/v1/contactGroups) and
-[contact search](https://developers.google.com/people/api/rest/v1/people/searchContacts)
-are not exposed by the five legacy actions. Contact creation uses the existing
-contacts scope. This supports adding a generic action in a separate feature change.
-This conversion retains the existing action set; the requested evaluation does
-not add a new public action contract.
+The `make_request` action adds access to Google People API v1 endpoints that are
+not exposed as dedicated actions, including contact creation, contact groups and
+contact search. It retains service-account delegation and uses the existing
+`https://www.googleapis.com/auth/contacts` scope. The domain-wide delegation
+configuration must authorize this scope; write operations additionally require
+the corresponding Google API permissions.
 
-A future implementation should restrict requests to `https://people.googleapis.com`,
-retain Google service-account delegation, validate HTTP method, path and JSON
-parameters, and document scope requirements and mutation sequencing. Arbitrary
-API host or scope support would need a separate design.
+Requests are limited to relative `/v1/` paths on `https://people.googleapis.com`.
+Absolute URLs, fragments, path traversal and caller-supplied authorization/host
+headers are rejected. Query values are passed as structured parameters; JSON
+bodies are parsed before sending. The action applies a 30-second timeout when
+none is provided, verifies TLS by default, and returns the HTTP status and body,
+including non-2xx responses, for playbook handling.
 
 ## Validation
 

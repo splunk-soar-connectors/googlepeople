@@ -45,11 +45,10 @@ def error_message(error):
         return PARSE_ERROR_MESSAGE
 
 
-def create_client(asset, scopes):
+def create_credentials(asset, scopes):
     # Manifest generation imports this module in the soarapps tool environment,
     # which may lack app dependencies. Google imports must stay runtime-only.
     from google.oauth2 import service_account
-    from googleapiclient import discovery
 
     try:
         key_dict = json.loads(asset.key_json)
@@ -69,6 +68,14 @@ def create_client(asset, scopes):
         credentials = credentials.with_subject(asset.login_email)
     except Exception as error:
         raise ActionFailure(f"Failed to create delegated credentials. {error_message(error)}") from error
+
+    return credentials
+
+
+def create_client(asset, scopes):
+    from googleapiclient import discovery
+
+    credentials = create_credentials(asset, scopes)
     try:
         return discovery.build("people", "v1", credentials=credentials)
     except Exception as error:

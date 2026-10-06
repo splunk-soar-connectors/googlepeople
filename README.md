@@ -6,7 +6,7 @@ Product Vendor: Google <br>
 Product Name: Google People <br>
 Minimum Product Version: 7.0.0
 
-This app integrates with Google People to support various generic and investigative actions
+This app integrates with Google People to support investigative actions and authenticated requests to Google People API v1.
 
 ## SDK and SDK Licensing details for the app
 
@@ -49,6 +49,10 @@ This app uses the oauth2client module, which is licensed under the Apache Softwa
 
 This app uses the pyasn1-modules module, which is licensed under the BSD License (BSD-2-Clause),
 Copyright (c) Ilya Etingof.
+
+#### requests
+
+This app uses the requests module, which is licensed under the Apache License, Version 2.0.
 
 #### rsa
 
@@ -124,7 +128,8 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [get user profile](#action-get-user-profile) - Provides information about a person given account ID <br>
 [list directory](#action-list-directory) - Lists all contacts and profiles in the user's domain directory <br>
 [list other contacts](#action-list-other-contacts) - Lists all contacts that are not in a contact group <br>
-[list people](#action-list-people) - Lists authenticated user's contacts
+[list people](#action-list-people) - Lists authenticated user's contacts <br>
+[make request](#action-make-request) - Send an authenticated request to a relative Google People API v1 endpoint.
 
 ## action: 'test connectivity'
 
@@ -413,6 +418,34 @@ action_result.data.\*.birthdays.\*.metadata.primary | boolean | | True False |
 action_result.summary.total_people_returned | numeric | | 1 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
+
+## action: 'make request'
+
+Send an authenticated request to a relative Google People API v1 endpoint.
+
+Type: **generic** <br>
+Read only: **False**
+
+Use a relative endpoint under `/v1/`, for example `/v1/people:searchContacts`. Requests are sent only to `https://people.googleapis.com` and use the Google Contacts scope with the configured service-account delegation. Absolute URLs, query strings in the endpoint, fragments, path traversal, and caller-supplied authorization/host headers are rejected. Query parameters can be provided as a JSON object or a query string. Non-2xx HTTP responses are returned in the action output for playbook handling.
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE
+--------- | -------- | ----------- | ----
+**http_method** | required | The HTTP method to use for the request. | string
+**endpoint** | required | Relative Google People API v1 endpoint, such as `/v1/people:searchContacts`. | string
+**headers** | optional | Headers to send as a JSON object. Authorization, host, cookie and framing headers are managed by the app. | string
+**query_parameters** | optional | Query parameters as a JSON object or URL-encoded query string. | string
+**body** | optional | Request body. Valid JSON is parsed when the content type is JSON. | string
+**timeout** | optional | Request timeout in seconds. Defaults to 30 seconds. | numeric
+**verify_ssl** | optional | Whether to verify the SSL certificate. Defaults to true. | boolean
+
+#### Action Output
+
+DATA PATH | TYPE | EXAMPLE VALUES
+--------- | ---- | --------------
+action_result.data.*.status_code | numeric | 200, 404, 500
+action_result.data.*.response_body | string | `{"key": "value"}`
 
 ______________________________________________________________________
 

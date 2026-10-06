@@ -69,7 +69,7 @@ def test_connectivity(soar: SOARClient, asset: Asset) -> None:
     logger.info("Test Connectivity Passed")
 
 
-from .actions import copy_contact, get_user_profile, list_directory, list_other_contacts, list_people  # noqa: F401
+from .actions import copy_contact, get_user_profile, list_directory, list_other_contacts, list_people, make_request  # noqa: F401
 
 
 if __name__ == "__main__":
