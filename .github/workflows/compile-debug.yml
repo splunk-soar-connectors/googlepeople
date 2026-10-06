@@ -22,8 +22,8 @@ jobs:
         with:
           uv_lock_directory: .
 
-      - name: Compile app with help-probe diagnostics
-        uses: splunk-soar-connectors/.github/.github/actions/compile-app@20128f4c3f14ea781a8e410d9e56d9c29249628b
+      - name: Compile app with scoped Rich terminal setting
+        uses: splunk-soar-connectors/.github/.github/actions/compile-app@3fa1386
         with:
           current_phantom_ip: ${{ vars.PHANTOM_INSTANCE_CURRENT_VERSION_IP }}
           next_phantom_ip: ${{ vars.PHANTOM_INSTANCE_NEXT_OL8_VERSION_IP }}
