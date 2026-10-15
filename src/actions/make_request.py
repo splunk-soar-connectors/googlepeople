@@ -19,7 +19,7 @@ from soar_sdk.action_results import MakeRequestOutput
 from soar_sdk.exceptions import ActionFailure
 from soar_sdk.params import MakeRequestParams, Param
 
-from ..app import Asset, app
+from ..app import Asset, app, logger
 from ..consts import GOOGLE_CONTACTS_SCOPE
 from ..helper import create_credentials
 
@@ -114,8 +114,9 @@ def _parse_query_parameters(raw_parameters: str | None) -> dict | list[tuple[str
 def make_request(params: GooglePeopleMakeRequestParams, asset: Asset) -> MakeRequestOutput:
     """Send an authenticated request to a relative Google People API v1 endpoint."""
     # Manifest generation runs without app dependencies; keep runtime-only imports local.
-    from google.auth.transport.requests import Request as GoogleAuthRequest
-    from requests import RequestException, request
+    from google.auth.exceptions import GoogleAuthError
+    from google.auth.transport.requests import AuthorizedSession
+    from requests import RequestException
 
     url = _request_url(params.endpoint)
     headers = _parse_headers(params.headers)
@@ -141,22 +142,20 @@ def make_request(params: GooglePeopleMakeRequestParams, asset: Asset) -> MakeReq
 
     credentials = create_credentials(asset, [GOOGLE_CONTACTS_SCOPE])
     try:
-        credentials.refresh(GoogleAuthRequest(timeout=timeout))
-    except Exception as error:
+        with AuthorizedSession(credentials) as session:
+            response = session.request(
+                method=method,
+                url=url,
+                headers=headers,
+                params=query_parameters,
+                data=body,
+                json=json_body,
+                timeout=timeout,
+                verify=params.verify_ssl if params.verify_ssl is not None else True,
+            )
+    except GoogleAuthError as error:
+        logger.error(f"Failed to obtain an access token for the Google People API: {error}")
         raise ActionFailure("Failed to obtain an access token for the Google People API") from error
-
-    headers["Authorization"] = f"Bearer {credentials.token}"
-    try:
-        response = request(
-            method=method,
-            url=url,
-            headers=headers,
-            params=query_parameters,
-            data=body,
-            json=json_body,
-            timeout=timeout,
-            verify=params.verify_ssl if params.verify_ssl is not None else True,
-        )
     except RequestException as error:
         raise ActionFailure(f"Google People API request failed: {error}") from error
 
