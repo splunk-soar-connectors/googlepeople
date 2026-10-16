@@ -40,6 +40,10 @@ This app uses the oauth2client module, which is licensed under the Apache Softwa
 This app uses the pyasn1-modules module, which is licensed under the BSD License (BSD-2-Clause),
 Copyright (c) Ilya Etingof.
 
+#### requests
+
+This app uses the requests module, which is licensed under the Apache License, Version 2.0.
+
 #### rsa
 
 This app uses the rsa module, which is licensed under the Apache Software License (ASL 2), Copyright
