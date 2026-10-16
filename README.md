@@ -1,12 +1,12 @@
 # Google People
 
 Publisher: Splunk <br>
-Connector Version: 1.1.11 <br>
+Connector Version: 1.1.12 <br>
 Product Vendor: Google <br>
 Product Name: Google People <br>
 Minimum Product Version: 7.0.0
 
-This app integrates with Google People to support investigative actions and authenticated requests to Google People API v1.
+This app integrates with Google People to support various generic and investigative actions
 
 ## SDK and SDK Licensing details for the app
 
@@ -426,26 +426,37 @@ Send an authenticated request to a relative Google People API v1 endpoint.
 Type: **generic** <br>
 Read only: **False**
 
-Use a relative endpoint under `/v1/`, for example `/v1/people:searchContacts`. Requests are sent only to `https://people.googleapis.com` and use the Google Contacts scope with the configured service-account delegation. Absolute URLs, query strings in the endpoint, fragments, path traversal, and caller-supplied authorization/host headers are rejected. Query parameters can be provided as a JSON object or a query string. Non-2xx HTTP responses are returned in the action output for playbook handling.
+'make request' action for the app. Used to handle arbitrary HTTP requests with the app's asset
 
 #### Action Parameters
 
-PARAMETER | REQUIRED | DESCRIPTION | TYPE
---------- | -------- | ----------- | ----
-**http_method** | required | The HTTP method to use for the request. | string
-**endpoint** | required | Relative Google People API v1 endpoint, such as `/v1/people:searchContacts`. | string
-**headers** | optional | Headers to send as a JSON object. Authorization, host, cookie and framing headers are managed by the app. | string
-**query_parameters** | optional | Query parameters as a JSON object or URL-encoded query string. | string
-**body** | optional | Request body. Valid JSON is parsed when the content type is JSON. | string
-**timeout** | optional | Request timeout in seconds. Defaults to 30 seconds. | numeric
-**verify_ssl** | optional | Whether to verify the SSL certificate. Defaults to true. | boolean
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**http_method** | required | The HTTP method to use for the request. | string | |
+**endpoint** | required | Relative Google People API v1 endpoint, such as '/v1/people:searchContacts'. Do not include a URL, query string, or fragment. This request uses the Google Contacts scope. | string | |
+**headers** | optional | The headers to send with the request (JSON object). An example is {'Content-Type': 'application/json'} | string | |
+**query_parameters** | optional | Parameters to append to the URL (JSON object or query string). An example is ?key=value&key2=value2 | string | |
+**body** | optional | The body to send with the request (JSON object). An example is {'key': 'value', 'key2': 'value2'} | string | |
+**timeout** | optional | The timeout for the request in seconds. | numeric | |
+**verify_ssl** | optional | Whether to verify the SSL certificate. Default is True. | boolean | |
 
 #### Action Output
 
-DATA PATH | TYPE | EXAMPLE VALUES
---------- | ---- | --------------
-action_result.data.*.status_code | numeric | 200, 404, 500
-action_result.data.*.response_body | string | `{"key": "value"}`
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.http_method | string | | |
+action_result.parameter.endpoint | string | | |
+action_result.parameter.headers | string | | |
+action_result.parameter.query_parameters | string | | |
+action_result.parameter.body | string | | |
+action_result.parameter.timeout | numeric | | |
+action_result.parameter.verify_ssl | boolean | | |
+action_result.data.\*.status_code | numeric | | 200 404 500 |
+action_result.data.\*.response_body | string | | {"key": "value"} |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
 
 ______________________________________________________________________
 
