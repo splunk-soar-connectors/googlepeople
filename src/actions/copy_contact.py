@@ -15,7 +15,7 @@
 from soar_sdk.abstract import SOARClient
 from soar_sdk.action_results import ActionOutput, OutputField, PermissiveActionOutput
 from soar_sdk.exceptions import ActionFailure
-from soar_sdk.params import Param
+from soar_sdk.params import Param, Params
 
 from ..app import Asset, app
 from ..consts import (
@@ -25,12 +25,11 @@ from ..consts import (
     OTHER_CONTACTS_RESOURCE_NAME_PREFIX,
 )
 from ..helper import create_client, execute, normalize_mask
-from ..models import LegacyParams, PersonOutput
 from ..views import render_copy_contact
 
 
-class CopyContactParams(LegacyParams):
-    # Non-optional mask types preserve defaults; SDK Optional fields become None when omitted.
+class CopyContactParams(Params):
+    # Keep the mask non-optional so its default applies when omitted.
     resource_name: str = Param(
         description='Resource name of the "Other contact" to copy', cef_types=["googlepeople resource name"], primary=True
     )
@@ -137,7 +136,7 @@ class CopyContactNamesOutput(PermissiveActionOutput):
     middleName: str = OutputField(example_values=["Test user"])
 
 
-class CopyContactOutput(PersonOutput):
+class CopyContactOutput(PermissiveActionOutput):
     etag: str = OutputField(example_values=["%EgcBAj0JPjcuGgQBAgUHIgxkaU5rT3hHZm5BVT0="])
     metadata: CopyContactMetadataOutput = OutputField()
     memberships: list[CopyContactMembershipsOutput] = OutputField()

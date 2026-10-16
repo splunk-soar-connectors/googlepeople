@@ -15,17 +15,16 @@
 from soar_sdk.abstract import SOARClient
 from soar_sdk.action_results import ActionOutput, OutputField, PermissiveActionOutput
 from soar_sdk.exceptions import ActionFailure
-from soar_sdk.params import Param
+from soar_sdk.params import Param, Params
 
 from ..app import Asset, app
 from ..consts import GOOGLE_DIRECTORY_SCOPE_READ_ONLY, GOOGLE_LIST_DIRECTORY_FAILED_MESSAGE
 from ..helper import create_client, error_message, normalize_mask, paginate, validate_limit
-from ..models import LegacyParams, PersonOutput
 from ..views import render_list_directory
 
 
-class ListDirectoryParams(LegacyParams):
-    # Non-optional mask types preserve defaults; SDK Optional fields become None when omitted.
+class ListDirectoryParams(Params):
+    # Keep the mask non-optional so its default applies when omitted.
     read_mask: str = Param(
         required=False,
         description="Comma-separated list of fields to be returned for each person. If not provided, default values will be used",
@@ -89,7 +88,7 @@ class ListDirectoryPhoneNumbersOutput(PermissiveActionOutput):
     formattedType: str = OutputField(example_values=["Work"])
 
 
-class ListDirectoryOutput(PersonOutput):
+class ListDirectoryOutput(PermissiveActionOutput):
     etag: str = OutputField(example_values=["%EgcBAj0JPjcuGgMBBwg="])
     resourceName: str = OutputField(cef_types=["googlepeople resource name"], example_values=["people/113211632970586460828"])
     names: list[ListDirectoryNamesOutput] = OutputField()

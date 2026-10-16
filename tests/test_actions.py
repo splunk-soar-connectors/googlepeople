@@ -66,7 +66,7 @@ def test_complete_results_match_executed_legacy_handlers(case, monkeypatch):
         "message": platform_result.get_message(),
         "status": platform_result.get_status(),
         "parameter": platform_result.get_param(),
-    } == {**case["expected"], "parameter": case["params"]}
+    } == {**case["expected"], "parameter": params.model_dump(by_alias=True)}
     assert api == case["api"], "Model construction must not insert missing fields into the API payload"
     assert create.call_args.args[1] == case["scopes"]
     assert request.call_args.kwargs == case["request"]

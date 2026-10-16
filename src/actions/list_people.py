@@ -15,16 +15,15 @@
 from soar_sdk.abstract import SOARClient
 from soar_sdk.action_results import ActionOutput, OutputField, PermissiveActionOutput
 from soar_sdk.exceptions import ActionFailure
-from soar_sdk.params import Param
+from soar_sdk.params import Param, Params
 
 from ..app import Asset, app
 from ..consts import GOOGLE_CONTACTS_SCOPE, GOOGLE_LIST_PEOPLE_FAILED_MESSAGE
 from ..helper import create_client, error_message, normalize_mask, paginate, validate_limit
-from ..models import LegacyParams, PersonOutput
 
 
-class ListPeopleParams(LegacyParams):
-    # Non-optional mask types preserve defaults; SDK Optional fields become None when omitted.
+class ListPeopleParams(Params):
+    # Keep the mask non-optional so its default applies when omitted.
     person_fields: str = Param(
         required=False,
         description="Comma-separated list of fields to be returned for each person. If not provided, default values will be used",
@@ -104,13 +103,7 @@ class ListPeopleBirthdaysOutput(PermissiveActionOutput):
     metadata: ListPeopleBirthdaysMetadataOutput = OutputField()
 
 
-class ListPeopleOutput(PersonOutput):
-    table_column_order = {
-        "action_result.data.*.names.*.displayName": 2,
-        "action_result.data.*.resourceName": 0,
-        "action_result.data.*.emailAddresses.*.value": 1,
-    }
-
+class ListPeopleOutput(PermissiveActionOutput):
     names: list[ListPeopleNamesOutput] = OutputField()
     etag: str = OutputField(example_values=["%EgcBAj0JPjcuGgQBAgUHIgxYcEJzUVA3cmlaWT0="])
     resourceName: str = OutputField(

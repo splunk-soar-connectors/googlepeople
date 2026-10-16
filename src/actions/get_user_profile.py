@@ -15,16 +15,15 @@
 from soar_sdk.abstract import SOARClient
 from soar_sdk.action_results import ActionOutput, OutputField, PermissiveActionOutput
 from soar_sdk.exceptions import ActionFailure
-from soar_sdk.params import Param
+from soar_sdk.params import Param, Params
 
 from ..app import Asset, app
 from ..consts import GOOGLE_CONTACTS_SCOPE, GOOGLE_GET_USER_PROFILE_FAILED_MESSAGE, GOOGLE_PROFILE_SCOPE
 from ..helper import create_client, execute, normalize_mask
-from ..models import LegacyParams, PersonOutput
 
 
-class GetUserProfileParams(LegacyParams):
-    # Non-optional mask types preserve defaults; SDK Optional fields become None when omitted.
+class GetUserProfileParams(Params):
+    # Keep the mask non-optional so its default applies when omitted.
     resource_name: str = Param(
         description="Resource name of the person to provide info about", cef_types=["googlepeople resource name"], primary=True
     )
@@ -84,15 +83,7 @@ class GetUserProfileEmailAddressesOutput(PermissiveActionOutput):
     metadata: GetUserProfileEmailAddressesMetadataOutput = OutputField()
 
 
-class GetUserProfileOutput(PersonOutput):
-    table_column_order = {
-        "action_result.data.*.names.*.metadata.source.type": 3,
-        "action_result.data.*.names.*.displayName": 1,
-        "action_result.data.*.resourceName": 0,
-        "action_result.data.*.emailAddresses.*.value": 2,
-        "action_result.data.*.emailAddresses.*.metadata.source.type": 4,
-    }
-
+class GetUserProfileOutput(PermissiveActionOutput):
     metadata: GetUserProfileMetadataOutput = OutputField()
     etag: str = OutputField(example_values=["%EgcBAj0JPjcuGgQBAgUH"])
     names: list[GetUserProfileNamesOutput] = OutputField()
